@@ -9,3 +9,4 @@ web = Blueprint("web",__name__)
 #     return jsonify({"result":"page not found"})
 
 from app.API.import_data import load_data_by_csv
+from app.API.preprocess_data import preprocess_data
