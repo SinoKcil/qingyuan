@@ -8,7 +8,6 @@ from random import random
 from flask import jsonify, request
 
 from app.API import web
-from app.functions.data_processor import process_data
 from run import app
 import pandas as pd
 # 首先做文件类型检验

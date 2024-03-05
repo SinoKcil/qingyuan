@@ -7,3 +7,5 @@ SECRET_KEY = 'ssssseeeeeffffff/sdfsadf^&*KKKKKL*(*(*))'
 UPLOAD_FOLDER = 'data\\temp'
 # 允许传输的文件类型
 ALLOWED_EXTENSIONS = {'csv'}
+
+CHUNK_PATH = '.\\chunk\\'
