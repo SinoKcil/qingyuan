@@ -9,3 +9,5 @@ UPLOAD_FOLDER = 'data\\temp'
 ALLOWED_EXTENSIONS = {'csv'}
 # 数据存储目录
 CHUNK_PATH = '.\\chunk\\'
+# LSTM的检测模型
+# LSTM_MODEL_PATH = '.\\app\\MLmodels\\lstm_shock_label_model.h5'

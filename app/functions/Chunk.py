@@ -9,6 +9,7 @@ import os
 
 from app.APIconfig import API_config
 from app.functions.generate_pitch_and_pool import  generate_pitch_and_rool
+from app.functions.rasterize import rasterize
 from run import app
 
 
@@ -50,11 +51,14 @@ class Chunk():
             print("Generated DataFrame is empty. No file saved.")
         return csv_save_path
 
-    def analyze_data(self):
-        csv_save_path = self.check_and_create_file_path()
-        csv_files = glob.glob(f'{csv_save_path}*.csv')
-        for file in csv_files:
-            df = pd.read_csv(file)
+    def analyze_data(self,file_path):
+        # csv_save_path = self.check_and_create_file_path()
+        # csv_files = glob.glob(f'{csv_save_path}*.csv')
+        # for file in csv_files:
+        #     df = pd.read_csv(file)
+        original_df = pd.read_csv(file_path)
+        rasterize_df = rasterize(original_df)
+
 
 
 

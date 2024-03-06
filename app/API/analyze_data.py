@@ -7,8 +7,8 @@ from app.API import web
 from app.functions.Chunk import Chunk
 
 
-@web.route('/anaylizeData', methods=['POST'])
-def anaylize_data():
+@web.route('/analyzeData', methods=['POST'])
+def analyze_data():
     if request.is_json:
         data = request.get_json()
         file_path = data.get('processedDataPath')
@@ -18,4 +18,4 @@ def anaylize_data():
         else:
             # 对数据进行分析
             chunk = Chunk(chunk_name)
-            chunk.analyze_data()
+            chunk.analyze_data(file_path)

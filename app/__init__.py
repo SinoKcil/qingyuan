@@ -2,6 +2,9 @@
 __author__ = 'Zephyr369'
 from flask import Flask
 
+from app.Models.Base import db
+
+
 # from app.MLmodels.user import db
 
 
@@ -17,8 +20,8 @@ def create_app():
     app.config.from_object('app.secure')
 
     register_blueprint(app)
-    # db.init_app(app)
-    # db.create_all(app=app)
+    db.init_app(app)
+    db.create_all(app=app)
 
     return app
 
