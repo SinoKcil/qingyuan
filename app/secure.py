@@ -9,5 +9,10 @@ UPLOAD_FOLDER = 'data\\temp'
 ALLOWED_EXTENSIONS = {'csv'}
 # 数据存储目录
 CHUNK_PATH = '.\\chunk\\'
+
 # LSTM的检测模型
-# LSTM_MODEL_PATH = '.\\app\\MLmodels\\lstm_shock_label_model.h5'
+LSTM_MODEL_PATH = '.\\app\\MLmodels\\lstm_shock_label_model.h5'
+# scaler 的路径
+SCALER_PATH = '.\\app\\MLmodels\\scaler.pkl'
+# 用户设置的阈值
+THRESHOLD = 0.5

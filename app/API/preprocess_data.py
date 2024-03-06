@@ -6,7 +6,7 @@ import os
 from app.API import web
 from flask import request, jsonify
 
-from app.functions.Chunk import Chunk
+from app.utils.Chunk import Chunk
 
 
 # 由于是四向穿梭车，九轴IMU的横滚角和俯仰角需要进行转换，故需要对数据进行预处理，

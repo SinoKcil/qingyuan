@@ -1,7 +1,7 @@
 # encoding=utf-8
 __author__ = 'Zephyr369'
 
-from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy, BaseQuery
+from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
 from sqlalchemy import Column, Integer, SmallInteger
 from contextlib import contextmanager
 from datetime import datetime
@@ -17,8 +17,10 @@ class SQLAlchemy(_SQLAlchemy):
             self.session.rollback()
             raise e
 
+
 db = SQLAlchemy()
 
+
 # 基类 用作继承
-class Base(db.model):
+class Base(db.Model):
     __abstract__ = True  # 不创建数据表

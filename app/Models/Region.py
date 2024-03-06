@@ -6,12 +6,14 @@ from sqlalchemy.orm import relationship
 
 from app.Models.Base import Base
 
+
 # Chunk 该表用于存储目前都有哪些区域
 
 class Region(Base):
     __tablename__ = 'regions'
-    region_name = Column(String(64), primary_key= True, nullable=False)
+    region_name = Column(String(64), primary_key=True, nullable=False)
     abnormalities = relationship('Abnormal', back_populates='region')
+
 
 # 外键是Region 一个Region会发生多次故障
 class Abnormal(Base):
@@ -41,5 +43,5 @@ class Abnormal(Base):
     # 3 表示出现故障，已经上报维护申请，且已经被审批
     # 4 表示出现故障，已经上报维护申请，且已经排除故障，且模型故障报告正确
     # 5 表示出现故障，已经上报维护申请，且已经排除故障，但模型故障报告错误
-    status = Column(Integer, default = 0)
-    region = relationship("Region", back_populates= "abnormalities")
+    status = Column(Integer, default=0)
+    region = relationship("Region", back_populates="abnormalities")

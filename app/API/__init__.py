@@ -11,3 +11,4 @@ web = Blueprint("web", __name__)
 
 from app.API.import_data import load_data_by_csv
 from app.API.preprocess_data import preprocess_data
+from app.API.analyze_data import analyze_data

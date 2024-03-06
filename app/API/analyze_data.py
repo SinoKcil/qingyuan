@@ -4,11 +4,15 @@ __author__ = 'Zephyr369'
 from flask import request, jsonify
 
 from app.API import web
-from app.functions.Chunk import Chunk
+from app.utils.Chunk import Chunk
 
 
 @web.route('/analyzeData', methods=['POST'])
 def analyze_data():
+    res = {
+                "code": 400001,
+                "result": "request is not json",
+            }
     if request.is_json:
         data = request.get_json()
         file_path = data.get('processedDataPath')
@@ -18,4 +22,9 @@ def analyze_data():
         else:
             # 对数据进行分析
             chunk = Chunk(chunk_name)
-            chunk.analyze_data(file_path)
+            result = chunk.analyze_data(file_path)
+            res = {
+                "code": 200000,
+                "result": result,
+            }
+    return jsonify(res), 200
