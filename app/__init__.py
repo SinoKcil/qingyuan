@@ -2,7 +2,7 @@
 __author__ = 'Zephyr369'
 from flask import Flask
 
-from app.Models.Base import db
+from app.Models.Region import db
 
 
 def register_blueprint(app):
@@ -17,8 +17,10 @@ def create_app():
     app.config.from_object('app.secure')
 
     register_blueprint(app)
-    db.init_app(app)
-    db.create_all(app)
+
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
 
     return app
 

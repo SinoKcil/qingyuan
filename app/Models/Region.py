@@ -4,7 +4,7 @@ __author__ = 'Zephyr369'
 from sqlalchemy import Column, String, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-from app.Models.Base import Base
+from app.Models.Base import db, Base
 
 
 # Chunk 该表用于存储目前都有哪些区域
@@ -19,7 +19,8 @@ class Region(Base):
 class Abnormal(Base):
     __tablename__ = 'abnormalities'
     # 发生故障的id 用来标识并且计数
-    id = Column(String(64), ForeignKey('regions.region_name'), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    region_name = Column(String(64), ForeignKey('regions.region_name'), nullable=False)
     # 发生的坐标(x, y)
     x = Column(Integer, nullable=False)
     y = Column(Integer, nullable=False)

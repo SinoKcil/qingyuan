@@ -10,11 +10,14 @@ from flask import jsonify, request
 from app.API import web
 from run import app
 import pandas as pd
+
+
 # 首先做文件类型检验
 def allowed_file(filename):
-
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
 # 接受后端传输的csv文件
 @web.route('/LoadDataByCsv', methods=['POST'])
 def load_data_by_csv():
@@ -49,4 +52,3 @@ def load_data_by_csv():
 
     # 对于非 POST 请求，返回不支持的方法错误
     return jsonify({'code': 405, 'message': 'Method Not Allowed'}), 405
-
