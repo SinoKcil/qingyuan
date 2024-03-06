@@ -2,7 +2,7 @@
 __author__ = 'Zephyr369'
 from flask import Flask
 
-# from app.models.user import db
+# from app.MLmodels.user import db
 
 
 def register_blueprint(app):

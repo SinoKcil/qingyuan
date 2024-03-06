@@ -1,6 +1,8 @@
 # encoding=utf-8
 __author__ = 'Zephyr369'
 
+import os
+
 from app.API import web
 from flask import request, jsonify
 
@@ -22,10 +24,21 @@ def preprocess_data():
         else:
             #  返回保存好的数据
             chunk = Chunk(chunk_name)
-            processed_data_path = chunk.process_data(file_path, file_name)
+            processed_data_path = chunk.process_data(file_path)
+            try:
+                # 判断文件是否存在
+                if os.path.exists(file_path):
+                    # 删除文件
+                    os.remove(file_path)
+                    print("remove completed!")
+                else:
+                    print("file not exists")
+            except Exception as e:
+                print("删除文件时发生错误:", str(e))
             result_to_return = {'code': 200000,
                                 'message': 'data preprocession complete!',
                                 'processedDataPath': processed_data_path,
+                                'fileName': file_name,
                                 'chunkName': chunk.chunk_name}
             return jsonify(result_to_return)
 

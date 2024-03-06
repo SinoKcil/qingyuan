@@ -5,8 +5,6 @@ import os
 
 import pandas as pd
 
-
-
 # 针对四向穿梭车 生成Roll和Pitch
 def generate_pitch_and_rool(original_df):
     original_df['Pitch'] = None
@@ -26,3 +24,4 @@ def generate_pitch_and_rool(original_df):
 
     original_df = original_df.dropna()
     return original_df
+
