@@ -16,3 +16,5 @@ LSTM_MODEL_PATH = '.\\app\\MLmodels\\lstm_shock_label_model.h5'
 SCALER_PATH = '.\\app\\MLmodels\\scaler.pkl'
 # 用户设置的阈值
 THRESHOLD = 0.5
+# 栅格最小阈值
+MINIMUM_THRESHOLD = 20

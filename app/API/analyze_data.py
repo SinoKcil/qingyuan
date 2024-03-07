@@ -17,6 +17,7 @@ def analyze_data():
         data = request.get_json()
         file_path = data.get('processedDataPath')
         chunk_name = data.get('chunkName')
+
         if file_path is None:
             return jsonify({'code': 400001, 'message': 'file path is not detected!'}), 400
         else:

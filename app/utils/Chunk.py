@@ -8,8 +8,12 @@ import numpy as np
 import pandas as pd
 import os
 
+from flask import session
+
 from Logger import Logger
 from app.APIconfig import API_config
+from app.Models.Base import db
+from app.Models.Region import Region
 from app.utils.generate_pitch_and_pool import generate_pitch_and_rool
 from app.utils.predict import predict
 from app.utils.rasterize import rasterize
@@ -27,6 +31,8 @@ class Chunk():
         self.chunk_path = chunk_path
         self.file_number = 0
         self.file_list = []
+
+
 
     # 对数据进行预处理 生成Roll&Pitch
     def check_and_create_file_path(self):
@@ -67,7 +73,8 @@ class Chunk():
         logger.info(f'数据栅格化完成:{str(rasterize_df.head(10))}')
         predicted_df = predict(rasterize_df)
 
-        save_path = self.chunk_path + 'reso\\test.csv'
-        predicted_df.to_csv()
+        save_path = self.chunk_path + self.chunk_name + '\\reso\\test.csv'
+        logger.info(f'数据预测完成,保存在:{save_path}!')
+        predicted_df.to_csv(save_path, index = False)
 
         return 'success'

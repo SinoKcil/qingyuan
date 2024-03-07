@@ -5,17 +5,19 @@ import os
 from datetime import time, datetime
 from random import random
 
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 
 from app.API import web
-from run import app
+# from run import app
 import pandas as pd
+
+from app.utils.Chunk import Chunk
 
 
 # 首先做文件类型检验
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+        filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
 # 接受后端传输的csv文件
@@ -35,12 +37,12 @@ def load_data_by_csv():
 
         if file and allowed_file(file.filename):
             try:
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                os.makedirs(current_app.config['UPLOAD_FOLDER'], exist_ok=True)
                 # 使用微秒级时间戳和随机数生成唯一文件名
                 timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
                 file_extension = file.filename.rsplit('.', 1)[1].lower()  # 获取文件扩展名
                 filename = f"{timestamp}_csvfile.{file_extension}"
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 return jsonify(
                     {'code': 200000, 'message': 'File successfully uploaded and processed', 'filePath': filepath,
@@ -52,3 +54,4 @@ def load_data_by_csv():
 
     # 对于非 POST 请求，返回不支持的方法错误
     return jsonify({'code': 405, 'message': 'Method Not Allowed'}), 405
+
