@@ -3,7 +3,7 @@ __author__ = 'Zephyr369'
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
-from config import Config  # 确保有这个配置类
+from config import Config
 import numpy as np
 import pandas as pd
 import torch

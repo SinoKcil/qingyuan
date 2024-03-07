@@ -1,7 +1,7 @@
 # encoding=utf-8
 __author__ = 'Zephyr369'
 
-from sqlalchemy import Column, String, ForeignKey, Integer
+from sqlalchemy import Column, String, ForeignKey, Integer, DateTime
 from sqlalchemy.orm import relationship
 
 from app.Models.Base import db, Base
@@ -26,17 +26,18 @@ class Abnormal(Base):
     y = Column(Integer, nullable=False)
     # 发生的故障标签
     # 0 正常
-    # 1 轨道出现较大落差
-    # 2 左右轨道高度不一
+    # 1 左右轨道高度不一
+    # 2 轨道出现较大落差
     # 3 轨道不平顺
     # 4 穿梭车因为打滑 出现骑轨
     label = Column(Integer, nullable=False)
-    # 时间
-    year = Column(Integer, nullable=False)
-    month = Column(Integer, nullable=False)
-    day = Column(Integer, nullable=False)
-    hour = Column(Integer, nullable=False)
-    minute = Column(Integer, nullable=False)
+    # 时间1
+    # year = Column(Integer, nullable=False)
+    # month = Column(Integer, nullable=False)
+    # day = Column(Integer, nullable=False)
+    # hour = Column(Integer, nullable=False)
+    # minute = Column(Integer, nullable=False)
+    time = Column(DateTime, nullable=False)
     # 故障的状态 由springboot进行维护 默认是0
     # 0 表示正常
     # 1 表示出现故障 但是没有被检测员上报
@@ -46,3 +47,4 @@ class Abnormal(Base):
     # 5 表示出现故障，已经上报维护申请，且已经排除故障，但模型故障报告错误
     status = Column(Integer, default=0)
     region = relationship("Region", back_populates="abnormalities")
+    Layers = Column(Integer, nullable=False)

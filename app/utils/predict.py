@@ -23,7 +23,6 @@ def predict(df):
 
     predictions = model.predict(new_features)
 
-    # 注意这里，我们将初始化列添加到原始df中，而不是new_data
     df['predict_abnormal_labels'] = 0  # 初始化为0 表示正常
 
     for i, prediction in enumerate(predictions):
