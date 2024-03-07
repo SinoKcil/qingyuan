@@ -69,12 +69,13 @@ class Chunk():
         logger.info(f'数据栅格化完成:{str(rasterize_df.head(10))}')
         predicted_df = predict(rasterize_df)
 
-        save_path = self.chunk_path + self.chunk_name + '\\reso\\result2.csv'
+        save_path = self.chunk_path + self.chunk_name + '\\reso\\result3.csv'
         # logger.info(f'数据预测完成,保存在:{save_path}!')
         # predicted_df.to_csv(save_path, index=False)
         result_df = transform_data(predicted_df, self.chunk_name)
         logger.info(f"Results: {str(result_df.head(50))}")
         result_df.to_csv(save_path, index=False)
+
 
         return 'success'
 
