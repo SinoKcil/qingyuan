@@ -1,10 +1,10 @@
-package com.example.springlearning;
+package com.example.qingyuanbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringlearningApplicationTests {
+class qingyuanbackendApplicationTests {
 
     @Test
     void contextLoads() {

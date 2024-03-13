@@ -1,6 +1,7 @@
-package com.example.springlearning.service;
+package com.example.qingyuanbackend.service;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -22,7 +23,7 @@ public class FileUploadService {
 
     private final String FLASK_API_ANALYZE_URL = "http://localhost:5555/analyzeData";
 
-    public String uploadFileAndProcessResponse(MultipartFile file) throws Exception {
+    public String uploadFileAndProcessResponse(MultipartFile file, String chunkName) throws Exception {
         HttpClient client = HttpClients.createDefault();
         HttpPost post = new HttpPost(FLASK_API_URL);
 
@@ -33,22 +34,17 @@ public class FileUploadService {
         post.setEntity(multipart);
 
         // 执行请求并获取响应
-        HttpEntity responseEntity = client.execute(post).getEntity();
+        HttpResponse response = client.execute(post);
+        HttpEntity responseEntity = response.getEntity();
         String responseString = EntityUtils.toString(responseEntity);
 
         // 解析JSON响应
         JSONObject jsonResponse = new JSONObject(responseString);
         if (jsonResponse.getInt("code") == 200000) {
-            System.out.println(jsonResponse.getString("filePath")+ "and" + jsonResponse.getString("fileName"));
-            return callPreprocessAPI(jsonResponse.getString("filePath"), jsonResponse.getString("fileName"));
+            return callPreprocessAPI(jsonResponse.getString("filePath"), jsonResponse.getString("fileName"), chunkName);
         } else {
             throw new Exception("Failed to upload file to Flask API: " + jsonResponse.getString("message"));
         }
-    }
-
-//    重载，当chunkName没有值的时候，默认添加到default
-    private String callPreprocessAPI(String filePath, String fileName) throws Exception{
-        return callPreprocessAPI(filePath, fileName, "Default");
     }
 
     private String callPreprocessAPI(String filePath, String fileName, String chunkName) throws Exception {
