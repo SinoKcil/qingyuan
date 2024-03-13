@@ -1,4 +1,4 @@
-package com.example.qingyuanbackend.response;
+package com.example.qingyuanbackend.responseOrRequest;
 
 // 注册响应类
 public class RegisterResponse {

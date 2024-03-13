@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    @Select("SELECT * FROM user WHWER username = #{username}")
+    @Select("SELECT * FROM user WHERE username = #{username}")
     User findByUsername(String username);
-
 }
