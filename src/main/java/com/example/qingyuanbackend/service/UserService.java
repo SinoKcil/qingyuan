@@ -26,6 +26,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtil jwtUtil;
+
     public RegisterResponse register(User user) {
         if(user.getPassword().length() < 6){
             return new RegisterResponse(false, PASSWORD_TOO_SHORT.getMessage());
@@ -74,4 +75,5 @@ public class UserService {
                 expiresIn
         );
     }
+
 }

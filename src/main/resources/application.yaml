@@ -8,7 +8,7 @@ spring:
       max-file-size: 200MB
       max-request-size: 200MB
   datasource:
-    url: jdbc:mysql://localhost:3306/software1&useSSL=false
+    url: jdbc:mysql://localhost:3306/software1?useSSL=false&characterEncoding=utf8
     username: root
     password: fjw258700
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -29,5 +29,6 @@ logging:
 jwt:
   secret: 51cb758772bdc07674d3ab291a05bda6e84d0d63ad69cf13844c12a3c4fb0ffc
   expiration: 30000 # 先设置为半分钟 方便进行调试
+  refreshExpiration: 30000
 
 
