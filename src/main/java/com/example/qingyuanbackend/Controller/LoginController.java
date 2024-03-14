@@ -29,12 +29,9 @@ public class LoginController {
     @ApiResponse(responseCode = "200", description = "登录成功")
     @ApiResponse(responseCode = "400", description = "登录失败")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+        System.out.println(loginRequest.toString());
         LoginResponse loginResponse = userService.login(loginRequest);
-        if(loginResponse.isSuccess()){
-            return ResponseEntity.ok(loginResponse);
-        }else{
-            return ResponseEntity.badRequest().body(loginResponse);
-        }
+        return ResponseEntity.ok(loginResponse);
     }
 
 }

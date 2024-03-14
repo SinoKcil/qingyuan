@@ -31,10 +31,6 @@ public class RegisterController {
     @ApiResponse(responseCode = "400", description = "注册失败")
     public ResponseEntity<?> register(@RequestBody User user){
         RegisterResponse response = userService.register(user);
-        if(response.isSuccess()){
-            return ResponseEntity.ok(response);
-        }else {
-            return ResponseEntity.badRequest().body(response); // 当操作失败时，返回400 Bad Request状态码及响应体
-        }
+        return ResponseEntity.ok(response);
     }
 }
