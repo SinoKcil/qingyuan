@@ -12,6 +12,10 @@ spring:
     username: root
     password: fjw258700
     driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  type-aliases-package: com.example.qingyuanbackend.model
+mybatis-plus:
+
 
 
 

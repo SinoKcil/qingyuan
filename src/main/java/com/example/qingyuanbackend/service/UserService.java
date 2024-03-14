@@ -38,7 +38,7 @@ public class UserService {
         }
 //      加密二字
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userMapper.insert(user);
+        userMapper.insertUser(user);
 
         return new RegisterResponse(true, REGISTRATION_SUCCESS.getMessage());
 

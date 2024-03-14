@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     @TableId(type = IdType.AUTO)
+    private Long id; // 如果使用基于数据库的自增ID，推荐使用Long类型
     private String username;     // 用户的用户名
     private String phone;    // 用户的手机号
     private String password;    //用户的密码，密文加密
@@ -19,6 +20,13 @@ public class User implements Serializable {
     private String region;// 用户管理的区域
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
