@@ -35,4 +35,6 @@ jwt:
   expiration: 30000 # 先设置为半分钟 方便进行调试
   refreshExpiration: 30000
 
+avatar:
+  avatarPath: "data/avatar/default.jpg"
 

@@ -13,9 +13,11 @@ public class LoginResponse {
     private long expires;
     private String Backend; // 演示用字段
 
+    private String avatar;// 头像
+
     // 构造函数、Getters 和 Setters
 
-    public LoginResponse(boolean success, String message, String username, List<String> roles, String accessToken, String refreshToken, long expires) {
+    public LoginResponse(boolean success, String message, String username, List<String> roles, String accessToken, String refreshToken, long expires, String avatar) {
         this.success = success;
         this.message = message;
         this.username = username;
@@ -23,11 +25,20 @@ public class LoginResponse {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expires = expires;
+        this.avatar = avatar;
         this.Backend = "这是擎源后台返回的数据，便于排查mock";
     }
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setSuccess(boolean success) {

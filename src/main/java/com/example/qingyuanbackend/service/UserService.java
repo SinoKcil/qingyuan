@@ -8,13 +8,11 @@ import com.example.qingyuanbackend.responseOrRequest.RegisterResponse;
 
 import com.example.qingyuanbackend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.example.qingyuanbackend.Message.*;
 
@@ -26,6 +24,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtil jwtUtil;
+    @Value("${avatar.avatarPath}")
+    private String avatarPath;
 
     public RegisterResponse register(User user) {
         if(user.getPassword().length() < 6){
@@ -46,11 +46,11 @@ public class UserService {
     public LoginResponse login(LoginRequest request){
         User user = userMapper.findByUsername(request.getUsername());
         if (user == null) {
-            return new LoginResponse(false, "账号尚未被注册", null, Collections.emptyList(), null, null, 0);
+            return new LoginResponse(false, "账号尚未被注册", null, Collections.emptyList(), null, null, 0, null);
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return new LoginResponse(false, "密码错误", null, Collections.emptyList(), null, null, 0);
+            return new LoginResponse(false, "密码错误", null, Collections.emptyList(), null, null, 0, null);
         }
 
         // 获取用户角色
@@ -65,6 +65,10 @@ public class UserService {
         // 计算Access Token过期时间
         long expiresIn = new Date().getTime() + jwtUtil.getExpiration();
 
+        if(user.getAvatar() == null || Objects.equals(user.getAvatar(), "string")){
+            user.setAvatar(avatarPath);
+        }
+
         return new LoginResponse(
                 true,
                 "登录成功",
@@ -72,7 +76,8 @@ public class UserService {
                 roles,
                 accessToken,
                 refreshToken,
-                expiresIn
+                expiresIn,
+                user.getAvatar()
         );
     }
 
