@@ -115,3 +115,36 @@ def train_cnn(csv_file, num_epochs=25, device=torch.device("cuda" if torch.cuda.
                 torch.save(model.state_dict(), f'models/checkpoint/cnn_epoch_{i}.pth')
 
     print('Training completed.')
+
+
+def make_predictions(model, dataset, device):
+    model = model.to(device)
+    loader = DataLoader(dataset, batch_size=64, shuffle=False)
+    predictions = []
+    with torch.no_grad():
+        for features, _ in loader:
+            features = features.unsqueeze(1).to(device)  # 增加通道维度
+            outputs = model(features)
+            _, predicted = torch.max(outputs.data, 1)
+            predictions.extend(predicted.cpu().numpy())
+    return np.array(predictions)
+
+
+
+# 测试
+# def __main__():
+#     # 加载模型和权重
+#     checkpoint_path = 'path_to_your_checkpoint.pth'  # 检查点路径
+#     num_features = 15  # 您的特征数量
+#     model = CNNModel(num_features=num_features)
+#     model.load_state_dict(torch.load(checkpoint_path))
+#
+#     # 准备数据集
+#     new_data_csv = 'path_to_new_data.csv'  # 新数据CSV文件的路径
+#     new_df = pd.read_csv(new_data_csv)
+#     # 假设new_df已经完成了必要的预处理，比如标准化
+#     new_dataset = FeatureDataset(df.values)
+#
+#     # 进行预测
+#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#     predictions = make_predictions(model, new_dataset, device)

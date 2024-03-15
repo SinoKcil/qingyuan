@@ -1,5 +1,8 @@
 # encoding=utf-8
 __author__ = 'Zephyr369'
+# ----------------------------------------------------------------
+# 多进程LSTM
+# ----------------------------------------------------------------
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
@@ -15,6 +18,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from config import LSTMConfig
+
+from pandarallel import pandarallel
+
+pandarallel.initialize()
+
+
+
 class DataProcessor:
     def __init__(self, config: Config):
         self.config = config
@@ -266,3 +276,53 @@ def train_lstm_model():
     val_loader = DataLoader(val_dataset, batch_size=config.batch_size)
 
     train_model(train_loader, val_loader, config, class_weights)
+
+# 测试
+# def __main__():
+# #     from tensorflow.keras.models import load_model
+# #     import numpy as np
+# #     import pandas as pd
+# #     from sqlalchemy import create_engine
+# #     import joblib
+# #
+# #     # 用户定义的阈值
+# #     user_defined_threshold = 0.5  # 举例，实际值应根据用户需求设置
+# #
+# #     # 加载模型和标准化器
+# #     model = load_model('./models/lstm_best_model_updated.h5')
+# #     scaler = joblib.load('./models/scaler.pkl')
+# #
+# #     # 数据库配置和读取数据
+# #     host = 'localhost'
+# #     user = 'root'
+# #     password = 'fjw258700'
+# #     database = 'qigui'
+# #     table_name = 'combination'
+# #     engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}')
+# #
+# #     # 读取数据
+# #     new_data = pd.read_sql_table(table_name, con=engine)
+# #     new_data = new_data[['CurAccZ', 'CurAccX', 'CurAccY', 'Pitch', 'Roll']]
+# #
+# #     # 对新数据进行特征标准化
+# #     new_features = scaler.transform(new_data.values)
+# #     new_features = new_features.reshape((new_features.shape[0], 1, new_features.shape[1]))
+# #
+# #     # 进行预测
+# #     predictions = model.predict(new_features)
+# #
+# #     # 初始化新列以存储预测结果
+# #     new_data['predict_abnormal_label'] = -1  # 初始设置为-1，表示未确定的分类
+# #
+# #     for i, prediction in enumerate(predictions):
+# #         max_prob = np.max(prediction)  # 获取最大概率
+# #         max_prob_index = np.argmax(prediction)  # 获取最大概率的索引
+# #         # 计算最大概率与其他概率的差值
+# #         diff = max_prob - np.sort(prediction)[-2]  # 与第二大的概率差值
+# #
+# #         # 如果差值大于用户定义的阈值，则认为这是一个确定的分类
+# #         if diff > user_defined_threshold:
+# #             new_data.at[i, 'predict_abnormal_label'] = max_prob_index
+# #
+# #     # 至此，new_data['predict_abnormal_label'] 中大于阈值的预测被更新为确定的分类，其他保持为-1
+#

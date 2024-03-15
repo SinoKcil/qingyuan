@@ -8,6 +8,8 @@ from datetime import datetime
 
 
 class SQLAlchemy(_SQLAlchemy):
+
+    # 利用上下文 实现提交失败的时候回滚 减少代码冗余
     @contextmanager
     def auto_commit(self):
         try:

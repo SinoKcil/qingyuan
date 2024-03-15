@@ -30,6 +30,7 @@ def load_data_by_csv():
             return jsonify({'code': 400001, 'message': 'No file part'}), 400
 
         file = request.files['file']
+        # chunk_name = request.form['chunkName'] # 从表单数据中获取chunkName的值
         # 如果用户没有选择文件，浏览器也会提交一个空的文件名
         if file.filename == '':
             # 返回传输文件为空的错误代码
@@ -45,7 +46,8 @@ def load_data_by_csv():
                 filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 return jsonify(
-                    {'code': 200000, 'message': 'File successfully uploaded and processed', 'filePath': filepath,
+                    {'code': 200000, 'message': 'File successfully uploaded and processed',
+                     'filePath': filepath,
                      'fileName': filename}), 200
             except Exception as e:
                 return jsonify({'code': 500001, 'message': 'Server failed to read the file'}), 500

@@ -25,3 +25,13 @@ def generate_pitch_and_rool(original_df):
     original_df = original_df.dropna()
     return original_df
 
+# 使用spark分布式
+# from pyspark.sql import functions as F
+#
+# def generate_pitch_and_rool(spark_df):
+#     # 计算 Roll 和 Pitch 的值
+#     spark_df = spark_df.withColumn('Pitch', F.when(spark_df['CurY'] == F.lag('CurY', 1).over(Window.partitionBy().orderBy('time')), spark_df['CurPitch']))
+#     spark_df = spark_df.withColumn('Roll', F.when(spark_df['CurX'] == F.lag('CurX', 1).over(Window.partitionBy().orderBy('time')), spark_df['CurRoll']))
+#     # 删除包含null的行
+#     spark_df = spark_df.na.drop()
+#     return spark_df

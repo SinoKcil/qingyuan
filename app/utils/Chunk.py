@@ -18,6 +18,7 @@ from app.utils.generate_pitch_and_pool import generate_pitch_and_rool
 from app.utils.predict import predict
 from app.utils.rasterize import rasterize
 from app.utils.transform_data import transform_data
+from app.utils.updata_to_sql import insert_dataframe_to_sql
 from run import app
 
 # 封装Chunk类，对不同仓库进行管理
@@ -74,11 +75,17 @@ class Chunk():
         # predicted_df.to_csv(save_path, index=False)
         result_df = transform_data(predicted_df, self.chunk_name)
         logger.info(f"Results: {str(result_df.head(50))}")
-        result_df.to_csv(save_path, index=False)
-
-
-        return 'success'
-
+        # result_df.to_csv(save_path, index=False)
+        update_result = insert_dataframe_to_sql(result_df)
+        # 删除文件:
+        if update_result == "success":
+            os.remove(file_path)
+            logger.info(f"文件{file_path}移除成功")
+            return {"message": "success"}
+        else:
+            logger.error("由于上传失败，故文件不能移除")
+            result = {"message": "error", "file_path": file_path}
+            return result
 
 # 测试代码
 # def __main__(self):

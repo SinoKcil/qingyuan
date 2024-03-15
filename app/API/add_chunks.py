@@ -25,4 +25,4 @@ def add_chunks():
             logger.critical(f"Successfully added chunk {chunk_name}")
             return jsonify({"code": 200000, "message": f"Successfully added chunk {chunk_name}"}), 200
     else:
-        return jsonify({"code": 4000001, "message": "request must be json!"})
+        return jsonify({"code": 4000001, "message": "request must be json!"}),400
