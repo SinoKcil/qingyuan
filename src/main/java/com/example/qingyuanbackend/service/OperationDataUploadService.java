@@ -16,7 +16,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 // 上传文件Service层
 @Service
-public class FileUploadService {
+public class OperationDataUploadService {
 
     private final String FLASK_API_URL = "http://localhost:5555/LoadDataByCsv";
     private final String FLASK_PREPROCESS_API_URL = "http://localhost:5555/preprocessData";

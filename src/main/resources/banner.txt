@@ -4,3 +4,5 @@ ${AnsiColor.BRIGHT_RED}/ / / /| | /| / / ${AnsiColor.BRIGHT_GREEN}/ / / /       
 ${AnsiColor.BRIGHT_RED}/ /_/ / | |/ |/ / ${AnsiColor.BRIGHT_GREEN}/ /_/ /        / /_/ /  / /   / / / / / /_/ / ${AnsiColor.BRIGHT_CYAN} / /  / /_/ / / /_/ /  / / / /       / /_/ / | |/ / ${AnsiColor.BRIGHT_YELLOW}/ /_/ /
 ${AnsiColor.BRIGHT_RED}\___\_\ |__/|__/  ${AnsiColor.BRIGHT_GREEN}\___\_\        \___\_\ /_/   /_/ /_/  \__, /  ${AnsiColor.BRIGHT_CYAN}/_/   \__,_/  \__,_/  /_/ /_/        \____/  |___/  ${AnsiColor.BRIGHT_YELLOW}\____/
 ${AnsiColor.DEFAULT}                                                       /____/
+
+                                                                                                                                                                   (Ver. 0.2.0)
