@@ -27,8 +27,6 @@ public class RegisterController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
             }))
-    @ApiResponse(responseCode = "200", description = "注册成功")
-    @ApiResponse(responseCode = "400", description = "注册失败")
     public ResponseEntity<?> register(@RequestBody User user){
         RegisterResponse response = userService.register(user);
         return ResponseEntity.ok(response);

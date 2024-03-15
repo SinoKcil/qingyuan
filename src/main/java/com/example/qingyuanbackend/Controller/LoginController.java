@@ -26,8 +26,6 @@ public class LoginController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = LoginRequest.class))
             }))
-    @ApiResponse(responseCode = "200", description = "登录成功")
-    @ApiResponse(responseCode = "400", description = "登录失败")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         System.out.println(loginRequest.toString());
         LoginResponse loginResponse = userService.login(loginRequest);

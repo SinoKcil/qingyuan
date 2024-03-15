@@ -1,11 +1,14 @@
 package com.example.qingyuanbackend.utils;
 
+import com.example.qingyuanbackend.mapper.UserMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.example.qingyuanbackend.model.User;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -20,6 +23,9 @@ public class JwtUtil {
 
     @Value("${jwt.refreshExpiration}")
     private long refreshExpiration; // 刷新令牌的有效期
+
+    @Autowired
+    private UserMapper userMapper;
 
     private SecretKey getSecretKey() {
         // 将密钥字符串转换为SecretKey对象，以用于签名或验证JWT
@@ -84,4 +90,11 @@ public class JwtUtil {
     public long getRefreshExpiration() {
         return refreshExpiration;
     }
+
+    public boolean isAdmin(String token){
+        String userId = getUserIdFromToken(token);
+        User user = userMapper.findByUsername(userId);
+        return user != null && "admin".equals(user.getRole());
+    }
+
 }

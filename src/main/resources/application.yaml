@@ -32,8 +32,8 @@ logging:
 
 jwt:
   secret: 51cb758772bdc07674d3ab291a05bda6e84d0d63ad69cf13844c12a3c4fb0ffc
-  expiration: 30000 # 先设置为半分钟 方便进行调试
-  refreshExpiration: 30000
+  expiration: 25200000 # 先设置为半分钟 方便进行调试
+  refreshExpiration: 25200000
 
 avatar:
   avatarPath: "data/avatar/default.jpg"

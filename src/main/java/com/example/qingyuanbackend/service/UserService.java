@@ -1,5 +1,6 @@
 package com.example.qingyuanbackend.service;
 
+import com.example.qingyuanbackend.mapper.RegionMapper;
 import com.example.qingyuanbackend.mapper.UserMapper;
 import com.example.qingyuanbackend.model.User;
 import com.example.qingyuanbackend.responseOrRequest.LoginRequest;
@@ -9,6 +10,7 @@ import com.example.qingyuanbackend.responseOrRequest.RegisterResponse;
 import com.example.qingyuanbackend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,50 @@ public class UserService {
     private JwtUtil jwtUtil;
     @Value("${avatar.avatarPath}")
     private String avatarPath;
+    @Autowired
+    private RegionMapper regionMapper;
+
+    // 列出所有用户
+    public List<User> listAllUsers() {
+        return userMapper.selectAllUsers();
+    }
+
+    // 列出所有区域
+    public List<String> listAllRegions() {
+        return regionMapper.selectAllRegions();
+    }
+
+    //根据用户名来更新区域
+    public Map<String, Object> updateUserRegionByUsername(String username,String region){
+        Map<String, Object> response = new HashMap<>();
+        User user = userMapper.findByUsername(username);
+        if(user == null){
+            response.put("success", false);
+            response.put("message", "User not found");
+        }
+        else{
+            user.setRegion(region);
+            int result = userMapper.updateUser(user);
+            response.put("success", result > 0);
+            response.put("user", user);
+        }
+        return response;
+    }
+
+    //根据用户名删除用户，同时返回刚才被删除的用户的信息
+    public Map<String, Object> deleteUserByUsername(String username) {
+        Map<String, Object> response = new HashMap<>();
+        User user = userMapper.findByUsername(username);
+        if (user != null) {
+            int result = userMapper.deleteUser(username);
+            response.put("success", result > 0);
+            response.put("user", user);
+        } else {
+            response.put("success", false);
+            response.put("message", "User not found");
+        }
+        return response;
+    }
 
     public RegisterResponse register(User user) {
         if(user.getPassword().length() < 6){
@@ -79,6 +125,45 @@ public class UserService {
                 expiresIn,
                 user.getAvatar()
         );
+    }
+
+    // 业务逻辑 获取所有的用户和区域
+    public ResponseEntity<?> getAllUsersAndRegions() {
+//        if(!jwtUtil.isAdmin(token)){
+//            return ResponseEntity.status(200)
+//                                 .body(Map.of("success", false, "message", "只有管理员" +
+//                                         "才能够进行用户管理"));
+//        }
+        List<User> users = listAllUsers();
+        List<String> regions = listAllRegions();
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("success", true);
+        response.put("users", users);
+        response.put("regions", regions);
+        return ResponseEntity.ok(response);
+    }
+
+    //业务逻辑 更新用户的区域
+    public ResponseEntity<?> updateUserRegion( String username, String region){
+//        if(!jwtUtil.isAdmin(token)){
+//            return ResponseEntity.status(200)
+//                    .body(Map.of("success", false, "message", "只有管理员" +
+//                            "才能够进行用户管理"));
+//        }
+        Map<String, Object> response = updateUserRegionByUsername(username, region);
+        return ResponseEntity.ok(response);
+    }
+
+    // 业务逻辑，删除用户
+    public ResponseEntity<?> deleteUser(String username) {
+//        if(!jwtUtil.isAdmin(token)){
+//            return ResponseEntity.status(200)
+//                    .body(Map.of("success", false, "message", "只有管理员" +
+//                            "才能够进行用户管理"));
+//        }
+        Map<String, Object> response = deleteUserByUsername(username);
+        return ResponseEntity.ok(response);
     }
 
 }
