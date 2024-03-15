@@ -5,6 +5,7 @@ import com.example.qingyuanbackend.model.User;
 //import org.apache.ibatis.annotations.Mapper;
 //import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public interface UserMapper {
     User findByUsername(@Param("username") String username);
 
     @Select("SELECT * FROM user WHERE role != 'admin'")
-    List<User> selectAllUsers();
+    List<User> selectAllUsers(RowBounds rowBounds);
 
     // 插入用户，并返回影响的行数。这里假设您的用户表名为 user
     @Insert("INSERT INTO user (username, phone, password, role, avatar, region) " +

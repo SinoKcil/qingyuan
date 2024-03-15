@@ -31,10 +31,17 @@ public class AdminController {
     @GetMapping(value = "/users")
     @Operation(summary = "获取所有用户信息和区域信息", description = "前端首先向该route发起请求，然后获取到所有的用户信息和区域信息" +
             "，封装在user的list中" +
-            "可以直接用来循环渲染，需要通过'Authorization'请求头中的JWT来进行身份验证。"
+            "可以直接用来循环渲染，需要通过'Authorization'请求头中的JWT来进行身份验证。" +
+            "该查询是分页查询" +
+            "当用户进行更改或者删除之后，前端可以重新请求这个路由",
+            parameters = {
+            @Parameter(in = ParameterIn.QUERY, name = "page",description = "页码", required = true),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description =  "一页的大小,按照前端规定", required = true)
+    }
             )
-    public ResponseEntity<?> getAllUsers() {
-        return userService.getAllUsersAndRegions();
+    public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "1") int page,
+                                         @RequestParam(defaultValue = "10") int size){
+        return userService.getAllUsersAndRegions(page, size);
     }
 
     // 更新用户的区域

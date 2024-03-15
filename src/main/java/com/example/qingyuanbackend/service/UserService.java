@@ -8,6 +8,7 @@ import com.example.qingyuanbackend.responseOrRequest.LoginResponse;
 import com.example.qingyuanbackend.responseOrRequest.RegisterResponse;
 
 import com.example.qingyuanbackend.utils.JwtUtil;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +33,16 @@ public class UserService {
     private RegionMapper regionMapper;
 
     // 列出所有用户
-    public List<User> listAllUsers() {
-        return userMapper.selectAllUsers();
+    public List<User> listAllUsers(int page, int size) {
+        // 计算offset和limit，RowBounds的两个参数
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        // 创建RowBounds对象
+        RowBounds rowBounds = new RowBounds(offset, limit);
+
+        // 调用Mapper的方法，并传入RowBounds对象以实现分页
+        return userMapper.selectAllUsers(rowBounds);
     }
 
     // 列出所有区域
@@ -128,13 +137,9 @@ public class UserService {
     }
 
     // 业务逻辑 获取所有的用户和区域
-    public ResponseEntity<?> getAllUsersAndRegions() {
-//        if(!jwtUtil.isAdmin(token)){
-//            return ResponseEntity.status(200)
-//                                 .body(Map.of("success", false, "message", "只有管理员" +
-//                                         "才能够进行用户管理"));
-//        }
-        List<User> users = listAllUsers();
+    public ResponseEntity<?> getAllUsersAndRegions(int page, int size) {
+        RowBounds rowBounds = new RowBounds((page-1) * size, size);
+        List<User> users = userMapper.selectAllUsers(rowBounds);
         List<String> regions = listAllRegions();
         Map<String, Object> response = new HashMap<>();
 
