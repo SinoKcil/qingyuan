@@ -1,8 +1,10 @@
 <!-- 主页，展示地图，最近工单等 -->
 <script setup lang='ts'>
     import { RefSymbol } from "@vue/reactivity";
-    import {ref,reactive,computed,markRaw} from "vue";
+    import {ref,reactive,computed} from "vue";
     import { useRouter } from "vue-router";
+    import { http } from "@/utils/http";
+    import { getRegions,getAbnormalities } from "@/api/back";
 
     enum routerCate{detail,ticket}//路由页面的id
     const activeRow=ref(-1);
@@ -16,9 +18,10 @@
         {message:"third"}
 
     ])
-    const myTable=[[1,2,3],[4,5,6],[7,8,9],[10,11,12],[13,14,15],[16,17,18],[19,20,21]]
-    const tableValue:number[][]=[[1,0,0],[0,-1,0],[1,-1,0],[0,-1,0],[1,-1,1],[0,-1,0],[1,1,1]]
+    var myTable=getAbnormalities["tableId"]
+    var tableValue:number[][]=getAbnormalities["tableStatus"]
     const fruits=["apple","pear","watermelon",'grape','banana','pineapple','icon','test','my','you','fuck','omg','one','two','three','four','five','six','seven']
+    var regions
     const showTip=ref(true)//展示悬浮窗
     const cursorX=ref(0)//监听鼠标坐标
     const cursorY=ref(0)
@@ -26,6 +29,26 @@
     const thisWrench=ref(-1)
     const router=useRouter()//路由，跳转页面
     const mobile=ref(screen.width<=993)
+
+    const area={
+        region:"Shanghai",
+        layer:1
+    }
+
+    getRegions()
+        .then(data => {
+        if (data) {
+            regions=data["regions"]//区域列表
+        }
+    })
+    getAbnormalities(area)
+        .then(data=>{
+        if(data){
+            myTable=data["tableId"]
+            tableValue=data["tableStatus"]
+        }
+    })
+    
 
    // var buttonString:String='border-radius:0%,height:50px,width:50px,background-color:'+choosedColor.value+',border-width:1px'
     
@@ -151,7 +174,7 @@
                 <form action="">
                     分析概览&nbsp;&nbsp;&nbsp;
                     <select name="weekchoose" style="border-width:1px;border-radius: 5%;" v-model="selected">
-                        <option v-for="(item,index) in fruits" style="border-width: 1px;">
+                        <option v-for="(item,index) in regions" style="border-width: 1px;">
                             {{ item }}
                         </option>
                     </select>
