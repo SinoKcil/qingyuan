@@ -34,6 +34,25 @@ const permissionRouter = {
     }
   ]
 };
+const systemManagementRouter = {
+  path: "/system",
+  meta: {
+    icon: "ri:settings-3-line",
+    title: "员工管理",
+    rank: 11
+  },
+  children: [
+    {
+      path: "/system/user/index",
+      name: "SystemUser",
+      meta: {
+        icon: "ri:admin-line",
+        title: "员工管理",
+        roles: ["admin","common"]
+      }
+    }
+  ]
+};
 
 export default [
   {
@@ -42,7 +61,10 @@ export default [
     response: () => {
       return {
         success: true,
-        data: [permissionRouter]
+        data: [
+          permissionRouter,
+          systemManagementRouter,
+        ]
       };
     }
   }

@@ -1,6 +1,6 @@
 export default {
-    path: "/carmap",
-    redirect: "/user/index",
+    path: "/usercenter",
+    redirect: "/usercenter/index",
     meta: {
       icon: "material-symbols:account-circle-outline",
       title: "个人中心",
@@ -9,7 +9,7 @@ export default {
     },
     children: [
       {
-        path: "/user/index",
+        path: "/usercenter/index",
         name: "UserCenter",
         component: () => import("@/views/user/index.vue"),
         meta: {
