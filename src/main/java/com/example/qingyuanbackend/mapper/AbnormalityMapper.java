@@ -12,7 +12,7 @@ import java.util.List;
 public interface AbnormalityMapper {
 
     //根据行 列 对应区域名 对应层数 找到故障点
-    @Select("SELECT * FROM abnormalities WHERE region_name = #{region} AND layer = #{layer} AND x = #{x} AND y = #{y} AND label = #{label}")
+    @Select("SELECT * FROM abnormalities WHERE region_name = #{region} AND layers = #{layer} AND x = #{x} AND y = #{y} AND label = #{label}")
     Abnormality findAbnormalityByRegionLayerAndCoordinates(@Param("region") String region,
                                                            @Param("layer") Integer layer,
                                                            @Param("x") int x,

@@ -34,7 +34,7 @@ public class AbnormalityService {
         List<List<String>> idMatrix = new ArrayList<>(rows);
         for (int i = 0; i < rows; i++) {
             List<Integer> statusRow = new ArrayList<>(Collections.nCopies(cols, -1)); // 默认状态为-1
-            List<String> idRow = new ArrayList<>(Collections.nCopies(cols, "")); // 默认ID为空
+            List<String> idRow = new ArrayList<>(Collections.nCopies(cols, "-1")); // 默认ID为空
             statusMatrix.add(statusRow);
             idMatrix.add(idRow);
         }
@@ -61,7 +61,7 @@ public class AbnormalityService {
         List<Abnormality> abnormalities = abnormalityMapper.findAbnormalitiesByRegionAndLayer(region, layer);
         AbnormalityForm form = transformAbnormalitiesToForm(abnormalities, region, layer);
 
-        // 假设row和col直接映射到矩阵中的位置
+        // row和col直接映射到矩阵中的位置
         String id = form.getTableId().get(row).get(col);
         // 解析ID获取x, y坐标
         Pattern p = Pattern.compile("\\((\\d+),(\\d+)\\)");
@@ -71,6 +71,11 @@ public class AbnormalityService {
             int y = Integer.parseInt(m.group(2));
             // 使用x, y, region, layer查询对应的异常详情
             Abnormality abnormality = abnormalityMapper.findAbnormalityByRegionLayerAndCoordinates(region, layer, x, y, label);
+            System.out.println(abnormality.toString());
+            // 构建AbnormalityDetail对象并填充数据
+            AbnormalityDetail detail = new AbnormalityDetail();
+            detail.fillFromAbnormality(abnormality);
+            return detail;
         } else {
             throw new RuntimeException("无法解析坐标");
         }
