@@ -32,8 +32,12 @@ export const useUserStore = defineStore({
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data) {
-              setToken(data.data);
+            if (data.success === true) {
+              //这里不需要传入data
+              setToken(data);
+              resolve(data);
+            } else {
+              // 当用户密码错误的时候直接返回
               resolve(data);
             }
           })

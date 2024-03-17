@@ -33,8 +33,8 @@ dataThemeChange();
 const { title } = useNav();
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "admin123"
+  username: "fjw",
+  password: "fjw258700"
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -43,7 +43,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
+        .loginByUsername({
+          username: ruleForm.username,
+          password: ruleForm.password
+        })
         .then(res => {
           if (res.success) {
             // 获取后端路由
@@ -51,6 +54,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               router.push(getTopMenu(true).path);
               message("登录成功", { type: "success" });
             });
+          } else {
+            loading.value = false;
+            message("账号或密码错误", { type: "error" });
+            router.back();
           }
         });
     } else {

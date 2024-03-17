@@ -1,9 +1,9 @@
 import { http } from "@/utils/http";
-import { systemDetail,abnormalities } from "./utils";
+import { systemDetail, abnormalities } from "./utils";
 
 /**
- * 
- * @param data 
+ *
+ * @param data
  * @returns 所有区域的名单regions[]，
  * 用户名单users:[
  * {
@@ -12,15 +12,18 @@ import { systemDetail,abnormalities } from "./utils";
  * ]
  */
 export const getRegions = (data?: object) => {
-    return http.request<any>("post", systemDetail(""), { data });
-  };
-  
+  // 应该用get
+  return http.request<any>("get", systemDetail(""), { data });
+};
+
 /**
- * 
- * @param areaPost 
- * @param data 
+ *
+ * @param areaPost
+ * @param data
  * @returns 该区域对应故障
- */  
-export const getAbnormalities = (data?: object) => {
-    return http.request<any>("post",abnormalities(""), { data });
-  };
+ */
+export const getAbnormalities = (region: string, layer: number) => {
+  return http.request<any>("get", abnormalities(""), {
+    params: { region: region, layer: layer }
+  });
+};
