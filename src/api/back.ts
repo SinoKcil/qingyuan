@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import { systemDetail, abnormalities } from "./utils";
+import { systemDetail, abnormalities, abnormalityDetail } from "./utils";
 
 /**
  *
@@ -25,5 +25,23 @@ export const getRegions = (data?: object) => {
 export const getAbnormalities = (region: string, layer: number) => {
   return http.request<any>("get", abnormalities(""), {
     params: { region: region, layer: layer }
+  });
+};
+
+/**
+ *
+ * @param Post
+ * @param data
+ * @returns 故障的详细信息
+ */
+export const getAbnormalDetails = (
+  region: string,
+  layer: number,
+  row: number,
+  col: number,
+  label: number
+) => {
+  return http.request<any>("get", abnormalityDetail(""), {
+    params: { region: region, layer: layer, row: row, col: col, label: label }
   });
 };

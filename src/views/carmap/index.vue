@@ -10,6 +10,7 @@ enum routerCate {
   detail,
   ticket
 } //路由页面的id
+const show = ref(true);
 const activeRow = ref(-1);
 const activeCol = ref(-1);
 //下为扳手icon的图标
@@ -53,6 +54,8 @@ const selected = ref(""); //绑定了选择框选择的结果
 const thisWrench = ref(-1);
 const router = useRouter(); //路由，跳转页面
 const mobile = ref(screen.width <= 993);
+const totalLayers = ref(1); //层数
+const selectedLayer = ref(1); //选择的层数
 
 const area = {
   region: "Shanghai",
@@ -68,6 +71,7 @@ getAbnormalities(area.region, area.layer).then(data => {
   if (data) {
     myTable = data["tableId"];
     tableValue = data["tableStatus"];
+    totalLayers.value = data["totalLayers"];
   }
 });
 
@@ -188,7 +192,13 @@ function routerToTable(category, ticketid) {
   if (category == "detail")
     router.push({
       name: "FaultDetail",
-      query: { Row: activeRow.value, Col: activeCol.value }
+      query: {
+        Row: activeRow.value,
+        Col: activeCol.value,
+        layer: selectedLayer.value,
+        label: tableValue[activeRow.value][activeCol.value],
+        region: area.region
+      }
     });
   if (category == "ticket")
     router.push({ name: "404", query: { ticketId: ticketid } });
@@ -199,6 +209,16 @@ watch(selected, newValue => {
   console.log(area.region);
   // 根据新的区域重新请求异常数据
   getAbnormalities(area.region, area.layer).then(data => {
+    if (data) {
+      myTable = data["tableId"];
+      tableValue = data["tableStatus"];
+      totalLayers.value = data["totalLayers"];
+    }
+  });
+});
+watch(selectedLayer, (newValue, oldValue) => {
+  // 发送请求
+  getAbnormalities(area.region, newValue).then(data => {
     if (data) {
       myTable = data["tableId"];
       tableValue = data["tableStatus"];
@@ -232,37 +252,59 @@ watch(selected, newValue => {
     <!-- 测试卡片 -->
     <!-- 地图卡片 -->
     <div style="flex-direction: column; grid-area: a">
-      <el-card class="card" shadow="never">
-        <div style="flex-direction: column">
-          <form action="">
-            分析概览&nbsp;&nbsp;&nbsp;
-            <select
-              name="weekchoose"
-              style="border-width: 1px; border-radius: 5%"
-              v-model="selected"
+      <el-card>
+        <class class="card" shadow="never">
+          <div style="display: flex; justify-content: space-between">
+            <div style="flex-direction: column">
+              <form action="">
+                分析概览&nbsp;&nbsp;&nbsp;
+                <select
+                  name="weekchoose"
+                  style="border-width: 1px; border-radius: 5%"
+                  v-model="selected"
+                >
+                  <option
+                    v-for="(item, index) in regions"
+                    style="border-width: 1px"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </form>
+            </div>
+            <div style="flex-direction: column">
+              <form action="">
+                层数&nbsp;&nbsp;&nbsp;
+                <select
+                  name="weekchoose"
+                  style="border-width: 1px; border-radius: 5%"
+                  v-model="selectedLayer"
+                >
+                  <option
+                    v-for="index in totalLayers"
+                    :key="index"
+                    :value="index"
+                  >
+                    {{ index }}
+                  </option>
+                </select>
+              </form>
+            </div>
+          </div>
+          <br />
+          <div v-for="(col, indexRow) in myTable" :key="indexRow">
+            <button
+              v-for="(item, indexCol) in myTable[indexRow]"
+              :key="indexCol"
+              :style="chooseColor(indexRow, indexCol)"
+              @mouseover="overMouse(indexRow, indexCol)"
+              @mouseleave="leaveMouse()"
+              @click="routerToTable('detail', -1)"
             >
-              <option
-                v-for="(item, index) in regions"
-                style="border-width: 1px"
-              >
-                {{ item }}
-              </option>
-            </select>
-          </form>
-        </div>
-        <br />
-        <div v-for="(col, indexRow) in myTable" :key="indexRow">
-          <button
-            v-for="(item, indexCol) in myTable[indexRow]"
-            :key="indexCol"
-            :style="chooseColor(indexRow, indexCol)"
-            @mouseover="overMouse(indexRow, indexCol)"
-            @mouseleave="leaveMouse()"
-            @click="routerToTable('detail', -1)"
-          >
-            {{ item }}
-          </button>
-        </div>
+              {{ item }}
+            </button>
+          </div>
+        </class>
       </el-card>
     </div>
     <!-- 右上待解决事件栏 -->
@@ -358,5 +400,25 @@ watch(selected, newValue => {
 
 .inline-block {
   display: inline-block;
+}
+
+.transition-box {
+  margin-bottom: 10px;
+  width: 200px;
+  height: 100px;
+  border-radius: 4px;
+  background-color: #409eff;
+  text-align: center;
+  color: #fff;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  margin-right: 20px;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 </style>
