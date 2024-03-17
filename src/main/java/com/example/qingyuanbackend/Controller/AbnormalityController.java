@@ -1,6 +1,8 @@
 package com.example.qingyuanbackend.Controller;
 
+import com.example.qingyuanbackend.mapper.RegionMapper;
 import com.example.qingyuanbackend.model.Abnormality;
+import com.example.qingyuanbackend.model.Region;
 import com.example.qingyuanbackend.service.AbnormalityService;
 import com.example.qingyuanbackend.utils.AbnormalityDetail;
 import com.example.qingyuanbackend.utils.AbnormalityForm;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,9 @@ public class AbnormalityController {
 
     @Autowired
     private AbnormalityService abnormalityService;
+
+    @Autowired
+    private RegionMapper regionMapper;
 
     @GetMapping("/region")
     @Operation(summary = "获取指定区域和层级的异常情况",
@@ -68,5 +74,14 @@ public class AbnormalityController {
         AbnormalityDetail detail = abnormalityService.getAbnormalityDetail(region, layer, row, col, label);
         return ResponseEntity.ok(detail);
     }
+
+    @GetMapping("/regions")
+    @Operation(summary = "获取所有区域", description = "一个平平无奇的获取所有区域的接口")
+    public ResponseEntity<?> getRegions(){
+        List<String> regions = regionMapper.selectAllRegions();
+        return ResponseEntity.ok(regions);
+    }
+
+
 
 }

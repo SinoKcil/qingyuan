@@ -23,5 +23,9 @@ public interface AbnormalityMapper {
     @Select("SELECT * FROM abnormalities WHERE region_name = #{region} AND layers = #{layer}")
     List<Abnormality> findAbnormalitiesByRegionAndLayer(String region, Integer layer);
 
+    // 找到区域的最大值
+    @Select("SELECT MAX(layers) FROM abnormalities WHERE region_name = #{region}")
+    Integer findMaxLayerByRegion(String region);
+
 
 }

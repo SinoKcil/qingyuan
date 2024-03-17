@@ -3,6 +3,7 @@ package com.example.qingyuanbackend.Controller;
 import com.example.qingyuanbackend.responseOrRequest.LoginRequest;
 import com.example.qingyuanbackend.responseOrRequest.LoginResponse;
 import com.example.qingyuanbackend.service.UserService;
+import com.example.qingyuanbackend.utils.AbnormalityForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,7 +26,12 @@ public class LoginController {
     @Operation(summary = "用户登录", description = "用户通过输入用户名和密码进行登录。",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = LoginRequest.class))
-            }))
+            }),
+            responses = {
+                    @ApiResponse(
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AbnormalityForm.class))),
+            })
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         System.out.println(loginRequest.toString());
         LoginResponse loginResponse = userService.login(loginRequest);

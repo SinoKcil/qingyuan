@@ -9,14 +9,17 @@ public class AbnormalityForm {
     private int maxX;
     private int maxY;
     private int Layer;
+
+    private int totalLayers;
     private String regionName;
 
-    public AbnormalityForm(List<List<String>> tableId, List<List<Integer>> tableStatus, int maxX, int maxY, int layer, String regionName) {
+    public AbnormalityForm(List<List<String>> tableId, List<List<Integer>> tableStatus, int maxX, int maxY, int layer, int totalLayers, String regionName) {
         this.tableId = tableId;
         this.tableStatus = tableStatus;
         this.maxX = maxX;
         this.maxY = maxY;
         Layer = layer;
+        this.totalLayers = totalLayers;
         this.regionName = regionName;
     }
 
@@ -58,6 +61,14 @@ public class AbnormalityForm {
 
     public void setLayer(int layer) {
         Layer = layer;
+    }
+
+    public int getTotalLayers() {
+        return totalLayers;
+    }
+
+    public void setTotalLayers(int totalLayers) {
+        this.totalLayers = totalLayers;
     }
 
     public String getRegionName() {

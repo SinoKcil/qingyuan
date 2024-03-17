@@ -46,8 +46,8 @@ public class AbnormalityService {
             statusMatrix.get(yIndex).set(xIndex, abnormality.getLabel()); // 设置状态
             idMatrix.get(yIndex).set(xIndex, String.format("(%d,%d)", abnormality.getX(), abnormality.getY())); // 设置ID
         }
-
-        return new AbnormalityForm(idMatrix, statusMatrix, xMax, yMax, layer, regionName);
+        int totalLayers = abnormalityMapper.findMaxLayerByRegion(regionName);
+        return new AbnormalityForm(idMatrix, statusMatrix, xMax, yMax, layer, totalLayers, regionName);
     }
 
 

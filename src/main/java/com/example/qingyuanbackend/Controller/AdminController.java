@@ -35,8 +35,8 @@ public class AdminController {
             "该查询是分页查询" +
             "当用户进行更改或者删除之后，前端可以重新请求这个路由",
             parameters = {
-            @Parameter(in = ParameterIn.QUERY, name = "page",description = "页码", required = true),
-            @Parameter(in = ParameterIn.QUERY, name = "size", description =  "一页的大小,按照前端规定", required = true)
+            @Parameter(in = ParameterIn.QUERY, name = "page",description = "页码", required = false),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description =  "一页的大小,按照前端规定", required = false)
     }
             )
     public ResponseEntity<?> getAllUsers(@RequestParam(defaultValue = "1") int page,
