@@ -4,6 +4,7 @@ import com.example.qingyuanbackend.model.Abnormality;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.security.core.parameters.P;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public interface AbnormalityMapper {
 
     @Select("SELECT * FROM abnormalities WHERE id = #{id}")
     Abnormality findAbnormalityById(@Param("id") int id);
+
+    @Update("UPDATE abnormalities SET status = 2 WHERE id = #{abnormalid}")
+    int updateStatus(@Param("abnormalid") int abnormalid);
 
 
 }
