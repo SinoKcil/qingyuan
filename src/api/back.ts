@@ -4,7 +4,8 @@ import {
   abnormalities,
   abnormalityDetail,
   getAuth,
-  getAbnormalityDetailForForm
+  getAbnormalityDetailForForm,
+  getRecentNewsAPI
 } from "./utils";
 
 /**
@@ -70,4 +71,8 @@ export const fetchAbnormalityForForm = id => {
   return http.request<any>("get", getAbnormalityDetailForForm(""), {
     params: { id }
   });
+};
+
+export const getRecentNews = () => {
+  return http.request<any>("get", getRecentNewsAPI(""));
 };

@@ -120,13 +120,29 @@ function reportFault(id: number) {
             @click="handleBack"
             >返回</el-button
           >
-          <el-text
-            class="mx-3"
-            type="warning"
-            style="font-family: Consolas; font-size: 32px"
-          >
-            <b>Label: {{ getRoute.query.label }}</b>
-          </el-text>
+          <div>
+            <!-- 检查是否有查询参数 -->
+            <div v-if="Object.keys(getRoute.query).length > 0">
+              <!-- 如果有查询参数，显示Label信息 -->
+              <el-text
+                class="mx-3"
+                type="warning"
+                style="font-family: Consolas; font-size: 32px"
+              >
+                <b>Label: {{ getRoute.query.label }}</b>
+              </el-text>
+            </div>
+
+            <!-- 如果没有查询参数，显示提示信息 -->
+            <el-text
+              v-else
+              class="mx-3"
+              type="error"
+              style="font-family: Consolas; font-size: 32px"
+            >
+              <b>请返回至工厂地图，然后点击对应区域来查看故障详情</b>
+            </el-text>
+          </div>
           <el-text
             class="mx-3"
             type="default"

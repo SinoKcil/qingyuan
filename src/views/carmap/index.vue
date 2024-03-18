@@ -4,7 +4,7 @@ import { RefSymbol } from "@vue/reactivity";
 import { ref, reactive, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { http } from "@/utils/http";
-import { getRegions, getAbnormalities } from "@/api/back";
+import { getRegions, getAbnormalities, getRecentNews } from "@/api/back";
 
 enum routerCate {
   detail,
@@ -13,6 +13,10 @@ enum routerCate {
 const show = ref(true);
 const activeRow = ref(-1);
 const activeCol = ref(-1);
+// 嘻嘻 我是懒狗 连变量名都不想换（)
+const fruits = ref(
+  getRecentNews() || ["这里空空如也诶，快去看看有没有异常状态"]
+);
 //下为扳手icon的图标
 const whiteWrench =
   "m19.275 19.8l.7-.7L12 11.125q.475-.575.738-1.3T13 8.3q0-1.875-1.313-3.175T8.5 3.825h-.25L11.325 6.9l-4.25 4.225L4 8.05v.275Q4 10.2 5.312 11.5T8.5 12.8q.8 0 1.513-.263T11.3 11.8l7.975 8ZM5.375 3.25q0-.725.775-1.088T8.5 1.8q2.725 0 4.612 1.888T15 8.3q0 .65-.125 1.288T14.5 10.8l6.875 6.875q.575.575.588 1.413T21.4 20.5l-.675.7q-.575.6-1.413.613t-1.437-.588l-6.9-6.9q-.575.25-1.2.363t-1.25.112q-2.725 0-4.612-1.887T2.025 8.3q0-1.6.35-2.363t1.075-.762q.25 0 .463.088t.387.262L7.075 8.3L8.5 6.9L5.725 4.125q-.175-.175-.263-.4t-.087-.475ZM9.2 9Z";
@@ -25,27 +29,28 @@ const myList = ref([
 ]);
 let myTable = getAbnormalities["tableId"];
 let tableValue: number[][] = getAbnormalities["tableStatus"];
-const fruits = [
-  "apple",
-  "pear",
-  "watermelon",
-  "grape",
-  "banana",
-  "pineapple",
-  "icon",
-  "test",
-  "my",
-  "you",
-  "fuck",
-  "omg",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven"
-];
+// const fruits = [
+//   "apple",
+//   "pear",
+//   "watermelon",
+//   "grape",
+//   "banana",
+//   "pineapple",
+//   "icon",
+//   "test",
+//   "my",
+//   "you",
+//   "fuck",
+//   "omg",
+//   "one",
+//   "two",
+//   "three",
+//   "four",
+//   "five",
+//   "six",
+//   "seven"
+// ];
+
 const regions = ref(); //这个需要响应式 因为请求是一个异步函数 更改接口之后 这是个由region 对象构成的list
 const showTip = ref(true); //展示悬浮窗
 const cursorX = ref(0); //监听鼠标坐标
@@ -61,6 +66,12 @@ const area = {
   region: "Shanghai",
   layer: 1
 };
+
+getRecentNews().then(data => {
+  if (data) {
+    fruits.value = data;
+  }
+});
 
 getRegions().then(data => {
   if (data) {
@@ -339,7 +350,7 @@ watch(selectedLayer, (newValue, oldValue) => {
               @mouseleave="thisWrench = -1"
               @click="routerToTable('ticket', index + item)"
             >
-              {{ `新增 ${index} 条问题，${item + index} 条已解决` }}
+              {{ ` ${item} ` }}
             </span>
           </div>
         </el-scrollbar>
