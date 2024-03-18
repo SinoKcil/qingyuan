@@ -2,6 +2,7 @@ package com.example.qingyuanbackend.service;
 
 import com.example.qingyuanbackend.mapper.RegionMapper;
 import com.example.qingyuanbackend.mapper.UserMapper;
+import com.example.qingyuanbackend.model.Region;
 import com.example.qingyuanbackend.model.User;
 import com.example.qingyuanbackend.responseOrRequest.LoginRequest;
 import com.example.qingyuanbackend.responseOrRequest.LoginResponse;
@@ -46,7 +47,7 @@ public class UserService {
     }
 
     // 列出所有区域
-    public List<String> listAllRegions() {
+    public List<Region> listAllRegions() {
         return regionMapper.selectAllRegions();
     }
 
@@ -140,7 +141,7 @@ public class UserService {
     public ResponseEntity<?> getAllUsersAndRegions(int page, int size) {
         RowBounds rowBounds = new RowBounds((page-1) * size, size);
         List<User> users = userMapper.selectAllUsers(rowBounds);
-        List<String> regions = listAllRegions();
+        List<Region> regions = listAllRegions();
         Map<String, Object> response = new HashMap<>();
 
         response.put("success", true);

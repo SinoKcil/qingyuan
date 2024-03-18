@@ -7,7 +7,7 @@ import java.util.Date;
 @TableName("abnormalities")
 public class Abnormality {
     private Integer id;
-    private String regionName;
+    private String region_name;
     private Integer x;
     private Integer y;
     private Integer label;
@@ -24,11 +24,11 @@ public class Abnormality {
     }
 
     public String getRegionName() {
-        return regionName;
+        return region_name;
     }
 
     public void setRegionName(String regionName) {
-        this.regionName = regionName;
+        this.region_name = regionName;
     }
 
     public Integer getX() {

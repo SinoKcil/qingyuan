@@ -27,5 +27,8 @@ public interface AbnormalityMapper {
     @Select("SELECT MAX(layers) FROM abnormalities WHERE region_name = #{region}")
     Integer findMaxLayerByRegion(String region);
 
+    @Select("SELECT * FROM abnormalities WHERE id = #{id}")
+    Abnormality findAbnormalityById(@Param("id") int id);
+
 
 }

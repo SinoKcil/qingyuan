@@ -17,8 +17,7 @@ public class User implements Serializable {
     private String phone;    // 用户的手机号
     private String password;    //用户的密码，密文加密
     private String role; // 用户的角色
-    @Value("${avatar.avatarPath}")
-    private String avatar;  //用户头像
+    private String avatar;  //用户性别
     private String region = "default";// 用户管理的区域
 
     public User() {

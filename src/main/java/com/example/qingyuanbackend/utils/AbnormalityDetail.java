@@ -37,7 +37,7 @@ public class AbnormalityDetail {
         // 初始化状态提示器
         statusHinter.put(0, "正常");
         statusHinter.put(1, "轨道出现异常，请及时上报维护申请。");
-        statusHinter.put(2, "轨道出现异常，已经上报维护申请，可以等待管理员查阅。");
+        statusHinter.put(2, "轨道出现异常，已经上报维护申请，可以等待管理员查阅，请及时修理。");
         statusHinter.put(3, "轨道出现异常，异常已经排除。");
         statusHinter.put(4, "轨道未发生异常，模型发生误报。");
 

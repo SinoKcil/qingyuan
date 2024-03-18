@@ -25,6 +25,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE username = #{username}")
     User findByUsername(@Param("username") String username);
 
+    @Select("SELECT * FROM user WHERE id = #{userid}")
+    User findByUserid(@Param("userid") int userid);
+
     @Select("SELECT * FROM user WHERE role != 'admin'")
     List<User> selectAllUsers(RowBounds rowBounds);
 

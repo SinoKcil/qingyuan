@@ -9,6 +9,25 @@ import java.io.Serializable;
 @TableName("regions")
 public class Region implements Serializable {
     public String region;
+    public String leader;//负责人
+
+    public int id;// 仓库的id
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getLeader() {
+        return leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
 
     public String getRegion() {
         return region;
