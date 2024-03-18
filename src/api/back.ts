@@ -1,5 +1,11 @@
 import { http } from "@/utils/http";
-import { systemDetail, abnormalities, abnormalityDetail } from "./utils";
+import {
+  systemDetail,
+  abnormalities,
+  abnormalityDetail,
+  getAuth,
+  getAbnormalityDetailForForm
+} from "./utils";
 
 /**
  *
@@ -43,5 +49,25 @@ export const getAbnormalDetails = (
 ) => {
   return http.request<any>("get", abnormalityDetail(""), {
     params: { region: region, layer: layer, row: row, col: col, label: label }
+  });
+};
+
+export const getAuthByToken = (token: string) => {
+  return http.request<any>(
+    "get",
+    getAuth(""),
+    {}, //没有参数
+    {
+      //传一个headers
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+};
+
+export const fetchAbnormalityForForm = id => {
+  return http.request<any>("get", getAbnormalityDetailForForm(""), {
+    params: { id }
   });
 };

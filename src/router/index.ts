@@ -1,4 +1,4 @@
-// import "@/utils/sso";
+import "@/utils/sso"; // 实现单点登录
 import { getConfig } from "@/config";
 import NProgress from "@/utils/progress";
 import { sessionKey, type DataInfo } from "@/utils/auth";

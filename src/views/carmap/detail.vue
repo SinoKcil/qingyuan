@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ArrowLeft, ArrowRight, Delete, Edit, Share } from "element-plus";
 import { getAbnormalDetails } from "@/api/back";
 import { ref, reactive, computed, watch } from "vue";
+import form from "../src/fix/form.vue";
 
 const getRoute = useRoute();
 const router = useRouter();
@@ -20,6 +21,7 @@ const time = ref<Date>(new Date());
 const layer = ref<number>(0);
 const suggestion = ref<string>("");
 const labelDesc = ref<string>("");
+let id: number; // 在数据库中这个故障的id 这是主键 可以减少参数的传递
 getAbnormalDetails(
   getRoute.query.region,
   getRoute.query.layer,
@@ -36,6 +38,7 @@ getAbnormalDetails(
     time.value = data.time;
     layer.value = data.layers;
     suggestion.value = data.fixSuggestion;
+    id = data.id;
   }
 });
 
@@ -70,6 +73,19 @@ const getTextClass = (label: string) => {
 //   }
 // }
 // const formattedDateTime = formatTimeString(time.value);
+function reportFault(id: number) {
+  if (id >= 0) {
+    router.push({
+      name: "SubmitTicket",
+      query: { AbnormalityId: id } //  故障的id（注意不是region的id）
+    });
+  } else {
+    router.push({
+      name: "404",
+      query: {}
+    });
+  }
+}
 </script>
 
 <template>
@@ -125,13 +141,26 @@ const getTextClass = (label: string) => {
           >
             <b>位置: {{ getRoute.query.region }}仓库({{ x }},{{ y }})</b>
           </el-text>
-          <el-text
-            class="mx-3"
-            type="error"
-            style="font-family: Consolas; font-size: 32px"
-          >
-            <b>{{ status }}</b>
-          </el-text>
+          <div>
+            <el-text
+              class="mx-3"
+              type="error"
+              style="font-family: Consolas; font-size: 32px"
+            >
+              <b>{{ status }}</b>
+            </el-text>
+
+            <!-- 当 status 为 1 时，显示上报故障按钮 -->
+            <el-button
+              v-if="status === '轨道出现异常，请及时上报维护申请。'"
+              type="warning"
+              style="margin-left: 58px; margin-top: -10px"
+              @click="reportFault(id)"
+              size="large"
+            >
+              上报故障
+            </el-button>
+          </div>
         </el-space>
       </el-card>
     </div>

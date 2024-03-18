@@ -46,7 +46,7 @@ const fruits = [
   "six",
   "seven"
 ];
-const regions = ref(); //这个需要响应式 因为请求是一个异步函数
+const regions = ref(); //这个需要响应式 因为请求是一个异步函数 更改接口之后 这是个由region 对象构成的list
 const showTip = ref(true); //展示悬浮窗
 const cursorX = ref(0); //监听鼠标坐标
 const cursorY = ref(0);
@@ -267,7 +267,7 @@ watch(selectedLayer, (newValue, oldValue) => {
                     v-for="(item, index) in regions"
                     style="border-width: 1px"
                   >
-                    {{ item }}
+                    {{ item.region }}
                   </option>
                 </select>
               </form>

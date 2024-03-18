@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-
+import { formUploader } from "./utils";
 type Result = {
   success: boolean;
   data: Array<any>;
@@ -14,7 +14,7 @@ export const mapJson = (params?: object) => {
 export const formUpload = data => {
   return http.request<Result>(
     "post",
-    "localhost:8848/api/operationData",
+    formUploader(""),
     { data },
     {
       headers: {

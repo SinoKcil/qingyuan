@@ -1,20 +1,97 @@
 <!-- 提交工单 -->
 
 <script setup lang="ts">
-import { ref,reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { formUpload } from "@/api/mock";
 import { message } from "@/utils/message";
 import { formDataHander } from "@pureadmin/utils";
+import { useRoute, useRouter } from "vue-router";
 import UploadIcon from "@iconify-icons/ri/upload-2-line";
-
+import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
+// 从cookie中来拿token要更安全
+import Cookies from "js-cookie";
+const getRoute = useRoute();
 const formRef = ref();
 const uploadRef = ref();
+const abnormalityId = getRoute.query.AbnormalityId;
+const warehouse = ref({
+  regionName: "请从详情页面提交",
+  regionId: "请从详情页面提交",
+  layer: "请从详情页面提交",
+  leaderName: "请从详情页面提交",
+  leaderPhone: "请从详情页面提交",
+  PosX: "请从详情页面提交",
+  PosY: "请从详情页面提交",
+  label: "请从详情页面提交"
+}); // 初始化仓库对象的默认值
 const validateForm = reactive({
   fileList: [],
   date: "",
-  checkResult:1,
-  actualResult:[]
+  checkResult: "1", // 这个应该是一个字符串，缺省值设置为选择‘是’（我们相信模型检测结果正确率很高）如果是数字，那么这个将无法被elementui进行检测，需要先点一下否再点是，直接点是 无法点选。
+  actualResult: []
 });
+
+const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
+const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工" };
+const genders = { male: "男", female: "女" };
+const labelMapper = {
+  0: "该处轨道正常",
+  1: "该处单侧轨道异常。该数据已经自动上报至穿梭车调度系统。出现该异常的主要因素可能是穿梭车长时间搬运重量不均匀的货物造成轨道偏载而发生变形。",
+  2: "该轨道接缝处出现较大落差，小车发生比较明显的颠簸。该数据已经自动上报至穿梭车调度系统。出现该异常的主要因素可能是轨道在安装初期矫正不够完全，或者长时间使用导致其中一段轨道受压较大而发生下沉。",
+  3: "该处出现了轨道不平顺的现象,小车长时间发生颠簸。该数据已经自动上报至穿梭车调度系统。出现该异常的主要因素能是仓库在长时间使用中积累了大量灰尘、杂物，使得轨道表面不平顺。"
+};
+
+const user_name = ref<string>("张大强");
+const user_id = ref<string>("010001");
+const user_gender = ref<string>("male");
+const user_tel = ref<string>("13012345678");
+const user_title = ref<string>("PrimaryWorker");
+//利用cookie获得用户信息
+function fetchUserData() {
+  const token = Cookies.get("authorized-token");
+  if (token) {
+    getAuthByToken(token)
+      .then(response => {
+        if (response.success) {
+          console.log(response);
+          user_name.value = response.user.username;
+          user_id.value = "0100" + response.user.id;
+          user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
+          user_tel.value = response.user.phone;
+          user_title.value = response.user.role;
+        }
+      })
+      .catch(error => {
+        console.log("error fetching user", error);
+      });
+  } else {
+    console.log("token is not found");
+  }
+}
+fetchUserData();
+function fetchWareHouseAbnormalities(abnormalityId) {
+  return fetchAbnormalityForForm(abnormalityId);
+}
+if (abnormalityId) {
+  fetchWareHouseAbnormalities(abnormalityId).then(data => {
+    if (data) {
+      warehouse.value.regionName = data["Abnormality"].regionName;
+      warehouse.value.regionId = data["Abnormality"].id;
+      warehouse.value.layer = data["Abnormality"].layers;
+      warehouse.value.leaderName = data["Leader"].username;
+      warehouse.value.leaderPhone = data["Leader"].phone;
+      warehouse.value.PosX = data["Abnormality"].x;
+      warehouse.value.PosY = data["Abnormality"].y;
+      warehouse.value.label = data["Abnormality"].label;
+    }
+  });
+}
+
+// 重置表单状态
+const resetForm = formEl => {
+  if (!formEl) return;
+  formEl.resetFields();
+};
 
 const submitForm = formEl => {
   if (!formEl) return;
@@ -23,7 +100,9 @@ const submitForm = formEl => {
       // 多个 file 在一个接口同时上传
       const formData = formDataHander({
         files: validateForm.fileList.map(file => ({ raw: file.raw })), // file 文件
-        date: validateForm.date // 别的字段
+        date: validateForm.date, // 提交工单的日期
+        AbnormalId: abnormalityId, //故障id
+        userid: user_id //用户id
       });
       formUpload(formData)
         .then(({ success }) => {
@@ -42,117 +121,151 @@ const submitForm = formEl => {
   });
 };
 
-const resetForm = formEl => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
+// const submitForm = () => {
+//   if (!formRef.value) return;
+//   const hhh = formRef.value.validate;
+//   formRef.value.validate(valid => {
+//     if (valid) {
+//       const formData = new FormData();
+//       validateForm.fileList.forEach(file => {
+//         formData.append("files", file.raw);
+//       });
+//       formData.append("date", validateForm.date);
+//       formData.append("AbnormalId", abnormalityId);
+//       formData.append("userid", user_id.value);
 
-const managers={PrimaryManager:'仓库管理员',GeneManeger:'总负责人'}
-    const workers={Practice:'实习检修工',PrimaryWorker:'初级检修工'}
-    const genders={male:'男',female:'女'}
+//       在这里调用API
+//       formUpload(formData)
+//         .then(({ success }) => {
+//           if (success) {
+//             message("提交成功", { type: "success" });
+//           } else {
+//             message("提交失败");
+//           }
+//         })
+//         .catch(error => {
+//           message(`提交异常 ${error}`, { type: "error" });
+//         });
+//     }
+//   });
+// };
 
-    const user_name="张大强"
-    const user_id="010001"
-    const user_gender='male'
-    const user_tel="13012345678"
-    const user_title="PrimaryWorker"
+// const resetForm = () => {
+//   if (!formRef.value) return;
+//   formRef.value.resetFields();
+// };
 </script>
 
-
 <template>
-<div>
+  <div>
     <!-- 维修人员信息 -->
     <el-card shadow="never" class="container">
-        <h4>维修人员信息</h4><hr><hr>
-        <div>姓名：{{ user_name }}</div>
-        <div>工号：{{ user_id }}</div>
-        <div>性别：{{ genders[user_gender] }}</div>
-        <div>联系电话：{{ user_tel }}</div>
-        <div>职称：{{ workers[user_title] }}</div>
+      <h4>维修人员信息</h4>
+      <hr />
+      <hr />
+      <div>姓名：{{ user_name }}</div>
+      <div>工号：{{ user_id }}</div>
+      <div>性别：{{ user_gender }}</div>
+      <div>联系电话：{{ user_tel }}</div>
+      <div>职称：{{ user_title }}</div>
     </el-card>
     <!-- 故障详情 -->
     <el-card shadow="never" class="container">
-        <h4>故障详情</h4><hr><hr>
-        <div>仓库编号：</div>
-        <div>仓库地址：</div>
-        <div>仓库负责人：</div>
-        <div>仓库负责人联系方式：</div>
-        <div>故障坐标：</div>
-        <div>故障评估：</div>
+      <h4>故障详情</h4>
+      <hr />
+      <hr />
+      <div>仓库地址：{{ warehouse.regionName }}</div>
+      <div>仓库编号：{{ warehouse.regionId }}</div>
+      <div>仓库层数: {{ warehouse.layer }}</div>
+      <div>仓库负责人：{{ warehouse.leaderName }}</div>
+      <div>仓库负责人联系方式：{{ warehouse.Phone }}</div>
+      <div>故障坐标：({{ warehouse.PosX }},{{ warehouse.PosY }})</div>
+      <div>故障评估：{{ labelMapper[warehouse.label] }}</div>
     </el-card>
     <!-- 检修情况上传 -->
     <el-form ref="formRef" v-model="validateForm">
-        <h4>检查情况</h4><hr><hr>
-        <el-form-item
-        :rules="[{ required: true, message: '故障情况不能为空' }]"
+      <h4>检查情况</h4>
+      <hr />
+      <hr />
+      <el-form-item :rules="[{ required: true, message: '故障情况不能为空' }]">
+        故障是否属实：
+        <el-radio
+          v-model="validateForm.checkResult"
+          label="1"
+          name="checkResult"
+          >是</el-radio
         >
-            故障是否属实：
-            <el-radio v-model="validateForm.checkResult" label="1" name="checkResult">是</el-radio>
-            <el-radio v-model="validateForm.checkResult" label="0" name="checkResult">否</el-radio>
-        </el-form-item>
-        <el-form-item v-if="validateForm.checkResult==0">
-            故障原因：
-            <el-checkbox-group v-model="validateForm.actualResult">
-              <el-checkbox value="1">原因1</el-checkbox>
-              <el-checkbox value="2">原因2</el-checkbox>
-              <el-checkbox value="3">原因3</el-checkbox>
-              <el-checkbox value="0">其他</el-checkbox>
-            </el-checkbox-group>
-            <el-input 
-            v-if="validateForm.actualResult.includes(0)" 
-            placeholder="请输入原因"
-            :rules="[{ required: true, message: '必须输入其他原因！' }]"
-            ></el-input>
-        </el-form-item>
-        <el-form-item
-      prop="fileList"
-      :rules="[{ required: true, message: '附件不能为空' }]"
-    >
-    检查情况：
-      <el-upload
-        ref="uploadRef"
-        v-model:file-list="validateForm.fileList"
-        drag
-        multiple
-        action="#"
-        class="!w-[200px]"
-        :auto-upload="false"
+        <el-radio
+          v-model="validateForm.checkResult"
+          label="0"
+          name="checkResult"
+          >否</el-radio
+        >
+      </el-form-item>
+      <el-form-item v-if="validateForm.checkResult == 0">
+        故障原因：
+        <el-checkbox-group v-model="validateForm.actualResult">
+          <el-checkbox value="1">原因1</el-checkbox>
+          <el-checkbox value="2">原因2</el-checkbox>
+          <el-checkbox value="3">原因3</el-checkbox>
+          <el-checkbox value="0">其他</el-checkbox>
+        </el-checkbox-group>
+        <el-input
+          v-if="validateForm.actualResult.includes(0)"
+          placeholder="请输入原因"
+          :rules="[{ required: true, message: '必须输入其他原因！' }]"
+        />
+      </el-form-item>
+      <el-form-item
+        prop="fileList"
+        :rules="[{ required: true, message: '附件不能为空' }]"
       >
-        <div class="el-upload__text">
-          <IconifyIconOffline
-            :icon="UploadIcon"
-            width="26"
-            class="m-auto mb-2"
-          />
-          可点击或拖拽上传
-        </div>
-      </el-upload>
-    </el-form-item>
-    <el-form-item
-      prop="date"
-      :rules="[{ required: true, message: '日期不能为空' }]"
-    >
-    检查时间：
-      <el-date-picker
-        v-model="validateForm.date"
-        type="datetime"
-        class="!w-[200px]"
-        placeholder="请选择日期时间"
-        value-format="YYYY-MM-DD HH:mm:ss"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" text bg @click="submitForm(formRef)">
-        提交
-      </el-button>
-      <el-button text bg @click="resetForm(formRef)">重置</el-button>
-    </el-form-item>
+        检查情况：
+        <el-upload
+          ref="uploadRef"
+          v-model:file-list="validateForm.fileList"
+          drag
+          multiple
+          action="#"
+          class="!w-[200px]"
+          :auto-upload="false"
+        >
+          <div class="el-upload__text">
+            <IconifyIconOffline
+              :icon="UploadIcon"
+              width="26"
+              class="m-auto mb-2"
+            />
+            可点击或拖拽上传
+          </div>
+        </el-upload>
+      </el-form-item>
+      <el-form-item
+        prop="date"
+        :rules="[{ required: false, message: '日期不能为空' }]"
+      >
+        <!-- 先改成false  -->
+        检查时间：
+        <el-date-picker
+          v-model="validateForm.date"
+          type="datetime"
+          class="!w-[200px]"
+          placeholder="请选择日期时间"
+          value-format="YYYY-MM-DD HH:mm:ss"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" text bg @click="submitForm(formRef)">
+          提交
+        </el-button>
+        <el-button text bg @click="resetForm(formRef)">重置</el-button>
+      </el-form-item>
     </el-form>
-</div>
+  </div>
 </template>
 <style>
-.container{
-    margin-top: 10px;
-    margin-bottom: 10px;
+.container {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>
