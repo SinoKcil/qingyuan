@@ -1,6 +1,5 @@
 package com.example.qingyuanbackend.model;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -37,7 +36,7 @@ public class Region implements Serializable {
         this.region = region;
     }
 
-    public Region(String region) {
+    public Region() {
         this.region = region;
     }
 }

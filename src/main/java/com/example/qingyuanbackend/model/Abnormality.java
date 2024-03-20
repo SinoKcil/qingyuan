@@ -15,6 +15,7 @@ public class Abnormality {
     private Integer status;
     private Integer layers;
 
+
     public Integer getId() {
         return id;
     }

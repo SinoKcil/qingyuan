@@ -25,6 +25,11 @@ public class User implements Serializable {
         ensureDirectoryExists();
     }
 
+    public User(long l, String user1) {
+        this.id = l;
+        this.username = user1;
+    }
+
     private void ensureDirectoryExists() {
         String directoryPath = "data/avatar"; // 目录路径
         java.nio.file.Path path = java.nio.file.Paths.get(directoryPath);
