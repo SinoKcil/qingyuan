@@ -81,7 +81,7 @@ class DataProcessor:
             # 方差
             variance = cur_acc_z.var()
             # 标准差
-            std_dev = cur_acc_z.std()
+            std_dev = cur_acc_z.std(
             # 翘度
             skewness = cur_acc_z.skew()
             # 偏度

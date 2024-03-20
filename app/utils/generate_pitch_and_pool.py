@@ -28,10 +28,30 @@ def generate_pitch_and_rool(original_df):
 # 使用spark分布式
 # from pyspark.sql import functions as F
 #
-# def generate_pitch_and_rool(spark_df):
-#     # 计算 Roll 和 Pitch 的值
-#     spark_df = spark_df.withColumn('Pitch', F.when(spark_df['CurY'] == F.lag('CurY', 1).over(Window.partitionBy().orderBy('time')), spark_df['CurPitch']))
-#     spark_df = spark_df.withColumn('Roll', F.when(spark_df['CurX'] == F.lag('CurX', 1).over(Window.partitionBy().orderBy('time')), spark_df['CurRoll']))
-#     # 删除包含null的行
-#     spark_df = spark_df.na.drop()
-#     return spark_df
+# from pyspark.sql import SparkSession
+# from pyspark.sql.window import Window
+# from pyspark.sql.functions import col, lead, when
+
+# 初始化SparkSession
+# spark = SparkSession.builder.appName("GeneratePitchAndRoll").getOrCreate()
+#
+# # 定义窗口规格，按照原始顺序遍历每一行
+# windowSpec = Window.orderBy("some_order_column")
+#
+# # 使用窗口函数计算相邻行的值
+# original_df = original_df.withColumn("next_CurX", lead("CurX", 1).over(windowSpec))
+# original_df = original_df.withColumn("next_CurY", lead("CurY", 1).over(windowSpec))
+#
+# # 根据CurX和CurY的相等性计算Pitch和Roll
+# original_df = original_df.withColumn("Pitch",
+#                                      when(col("CurY") == col("next_CurY"), col("CurPitch"))
+#                                      .otherwise(when(col("CurX") == col("next_CurX"), col("CurRoll")))
+#                                     )
+# original_df = original_df.withColumn("Roll",
+#                                      when(col("CurY") == col("next_CurY"), col("CurRoll"))
+#                                      .otherwise(when(col("CurX") == col("next_CurX"), col("CurPitch")))
+#                                     )
+#
+# # 移除空值
+# original_df = original_df.filter(col("Pitch").isNotNull() & col("Roll").isNotNull())
+# original_df.show()
