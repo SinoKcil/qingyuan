@@ -1,8 +1,9 @@
 <!-- 提交工单 -->
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted,unref } from "vue";
 import { formUpload } from "@/api/mock";
+import axios from '@/utils/axios'
 import { message } from "@/utils/message";
 import { formDataHander } from "@pureadmin/utils";
 import { useRoute, useRouter } from "vue-router";
@@ -11,7 +12,6 @@ import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
 // 从cookie中来拿token要更安全
 import Cookies from "js-cookie";
 const getRoute = useRoute();
-const formRef = ref();
 const uploadRef = ref();
 const abnormalityId = getRoute.query.AbnormalityId;
 const warehouse = ref({
@@ -24,15 +24,10 @@ const warehouse = ref({
   PosY: "请从详情页面提交",
   label: "请从详情页面提交"
 }); // 初始化仓库对象的默认值
-const validateForm = reactive({
-  fileList: [],
-  date: "",
-  checkResult: "1", // 这个应该是一个字符串，缺省值设置为选择‘是’（我们相信模型检测结果正确率很高）如果是数字，那么这个将无法被elementui进行检测，需要先点一下否再点是，直接点是 无法点选。
-  actualResult: []
-});
+
 
 const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
-const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工" };
+const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工",SeniorWorker:"高级检修工" };
 const genders = { male: "男", female: "女" };
 const labelMapper = {
   0: "该处轨道正常",
@@ -47,79 +42,72 @@ const user_gender = ref<string>("male");
 const user_tel = ref<string>("13012345678");
 const user_title = ref<string>("PrimaryWorker");
 //利用cookie获得用户信息
-function fetchUserData() {
-  const token = Cookies.get("authorized-token");
-  if (token) {
-    getAuthByToken(token)
-      .then(response => {
-        if (response.success) {
-          console.log(response);
-          user_name.value = response.user.username;
-          user_id.value = "0100" + response.user.id;
-          user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
-          user_tel.value = response.user.phone;
-          user_title.value = response.user.role;
-        }
-      })
-      .catch(error => {
-        console.log("error fetching user", error);
-      });
-  } else {
-    console.log("token is not found");
-  }
-}
-fetchUserData();
-function fetchWareHouseAbnormalities(abnormalityId) {
-  return fetchAbnormalityForForm(abnormalityId);
-}
-if (abnormalityId) {
-  fetchWareHouseAbnormalities(abnormalityId).then(data => {
-    if (data) {
-      warehouse.value.regionName = data["Abnormality"].regionName;
-      warehouse.value.regionId = data["Abnormality"].id;
-      warehouse.value.layer = data["Abnormality"].layers;
-      warehouse.value.leaderName = data["Leader"].username;
-      warehouse.value.leaderPhone = data["Leader"].phone;
-      warehouse.value.PosX = data["Abnormality"].x;
-      warehouse.value.PosY = data["Abnormality"].y;
-      warehouse.value.label = data["Abnormality"].label;
+// function fetchUserData() {
+//   const token = Cookies.get("authorized-token");
+//   if (token) {
+//     getAuthByToken(token)
+//       .then(response => {
+//         if (response.success) {
+//           console.log(response);
+//           user_name.value = response.user.username;
+//           user_id.value = "0100" + response.user.id;
+//           user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
+//           user_tel.value = response.user.phone;
+//           user_title.value = response.user.role;
+//         }
+//       })
+//       .catch(error => {
+//         console.log("error fetching user", error);
+//       });
+//   } else {
+//     console.log("token is not found");
+//   }
+// }
+// fetchUserData();
+// function fetchWareHouseAbnormalities(abnormalityId) {
+//   return fetchAbnormalityForForm(abnormalityId);
+// }
+// if (abnormalityId) {
+//   fetchWareHouseAbnormalities(abnormalityId).then(data => {
+//     if (data) {
+//       warehouse.value.regionName = data["Abnormality"].regionName;
+//       warehouse.value.regionId = data["Abnormality"].id;
+//       warehouse.value.layer = data["Abnormality"].layers;
+//       warehouse.value.leaderName = data["Leader"].username;
+//       warehouse.value.leaderPhone = data["Leader"].phone;
+//       warehouse.value.PosX = data["Abnormality"].x;
+//       warehouse.value.PosY = data["Abnormality"].y;
+//       warehouse.value.label = data["Abnormality"].label;
+//     }
+//   });
+// }
+
+const formRef = ref(null);
+const validateForm = reactive({
+  fileList: [],
+  date: "",
+  checkResult: '1', 
+  //这个应该是一个字符串，缺省值设置为选择‘是’（我们相信模型检测结果正确率很高）如果是数字，那么这个将无法被elementui进行检测，需要先点一下否再点是，直接点是 无法点选。
+  actualResult: [],
+  userid: user_id
+});
+const submitForm =()=>{
+  let result="没成功"
+  formRef.value.validate(async()=>{
+    alert("here")
+    try{
+      result=await axios.post("form/upload",validateForm)
     }
-  });
+    catch(err){
+      console.log("error:"+err)
+      alert("运行出错，错误原因为："+err)
+    }finally{
+      alert(result)
+    }
+  })
+  //alert(result)
 }
 
-// 重置表单状态
-const resetForm = formEl => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-
-const submitForm = formEl => {
-  if (!formEl) return;
-  formEl.validate(valid => {
-    if (valid) {
-      // 多个 file 在一个接口同时上传
-      const formData = formDataHander({
-        files: validateForm.fileList.map(file => ({ raw: file.raw })), // file 文件
-        date: validateForm.date, // 提交工单的日期
-        AbnormalId: abnormalityId, //故障id
-        userid: user_id //用户id
-      });
-      formUpload(formData)
-        .then(({ success }) => {
-          if (success) {
-            message("提交成功", { type: "success" });
-          } else {
-            message("提交失败");
-          }
-        })
-        .catch(error => {
-          message(`提交异常 ${error}`, { type: "error" });
-        });
-    } else {
-      return false;
-    }
-  });
-};
 
 // const submitForm = () => {
 //   if (!formRef.value) return;
@@ -174,16 +162,17 @@ const submitForm = formEl => {
       <h4>故障详情</h4>
       <hr />
       <hr />
+      <!-- 这个地方不需要填写，只要抓取数据放在这里就可以了 -->
       <div>仓库地址：{{ warehouse.regionName }}</div>
       <div>仓库编号：{{ warehouse.regionId }}</div>
       <div>仓库层数: {{ warehouse.layer }}</div>
       <div>仓库负责人：{{ warehouse.leaderName }}</div>
-      <div>仓库负责人联系方式：{{ warehouse.Phone }}</div>
+      <div>仓库负责人联系方式：{{ warehouse.leaderPhone }}</div>
       <div>故障坐标：({{ warehouse.PosX }},{{ warehouse.PosY }})</div>
       <div>故障评估：{{ labelMapper[warehouse.label] }}</div>
     </el-card>
     <!-- 检修情况上传 -->
-    <el-form ref="formRef" v-model="validateForm">
+    <el-form ref="formRef" :model="validateForm">
       <h4>检查情况</h4>
       <hr />
       <hr />
@@ -202,7 +191,7 @@ const submitForm = formEl => {
           >否</el-radio
         >
       </el-form-item>
-      <el-form-item v-if="validateForm.checkResult == 0">
+      <el-form-item v-if="validateForm.checkResult === '0'">
         故障原因：
         <el-checkbox-group v-model="validateForm.actualResult">
           <el-checkbox value="1">原因1</el-checkbox>
@@ -255,10 +244,9 @@ const submitForm = formEl => {
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" text bg @click="submitForm(formRef)">
+        <el-button type="primary" text bg @click="submitForm()">
           提交
         </el-button>
-        <el-button text bg @click="resetForm(formRef)">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -269,3 +257,4 @@ const submitForm = formEl => {
   margin-bottom: 10px;
 }
 </style>
+./axios

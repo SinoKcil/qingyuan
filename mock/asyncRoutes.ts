@@ -1,17 +1,16 @@
 // 模拟后端动态生成路由
-import { MockMethod } from "vite-plugin-mock";
+import { defineFakeRoute } from "vite-plugin-fake-server/client";
 
 /**
  * roles：页面级别权限，这里模拟二种 "admin"、"common"
  * admin：管理员角色
  * common：普通角色
  */
-
 const permissionRouter = {
   path: "/permission",
   meta: {
     title: "权限管理",
-    icon: "lollipop",
+    icon: "ep:lollipop",
     rank: 10
   },
   children: [
@@ -29,7 +28,11 @@ const permissionRouter = {
       meta: {
         title: "按钮权限",
         roles: ["admin", "common"],
-        auths: ["btn_add", "btn_edit", "btn_delete"]
+        auths: [
+          "permission:btn:add",
+          "permission:btn:edit",
+          "permission:btn:delete"
+        ]
       }
     }
   ]
@@ -48,15 +51,15 @@ const systemManagementRouter = {
       meta: {
         icon: "ri:admin-line",
         title: "员工管理",
-        roles: ["admin","common"]
+        //roles: ["admin"]
       }
     }
   ]
 };
 
-export default [
+export default defineFakeRoute([
   {
-    url: "/getAsyncRoutes",
+    url: "/get-async-routes",
     method: "get",
     response: () => {
       return {
@@ -68,4 +71,4 @@ export default [
       };
     }
   }
-] as MockMethod[];
+]);

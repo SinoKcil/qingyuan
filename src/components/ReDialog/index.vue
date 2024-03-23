@@ -64,9 +64,10 @@ const fullscreenClass = computed(() => {
 function eventsCallBack(
   event: EventType,
   options: DialogOptions,
-  index: number
+  index: number,
+  isClickFullScreen = false
 ) {
-  fullscreen.value = options?.fullscreen ?? false;
+  if (!isClickFullScreen) fullscreen.value = options?.fullscreen ?? false;
   if (options?.[event] && isFunction(options?.[event])) {
     return options?.[event]({ options, index });
   }
@@ -84,13 +85,13 @@ function handleClose(
 
 <template>
   <el-dialog
-    class="pure-dialog"
     v-for="(options, index) in dialogStore"
     :key="index"
     v-bind="options"
     v-model="options.visible"
+    class="pure-dialog"
     :fullscreen="fullscreen ? true : options?.fullscreen ? true : false"
-    @close="handleClose(options, index)"
+    @closed="handleClose(options, index)"
     @opened="eventsCallBack('open', options, index)"
     @openAutoFocus="eventsCallBack('openAutoFocus', options, index)"
     @closeAutoFocus="eventsCallBack('closeAutoFocus', options, index)"
@@ -108,7 +109,17 @@ function handleClose(
         <i
           v-if="!options?.fullscreen"
           :class="fullscreenClass"
-          @click="fullscreen = !fullscreen"
+          @click="
+            () => {
+              fullscreen = !fullscreen;
+              eventsCallBack(
+                'fullscreenCallBack',
+                { ...options, fullscreen },
+                index,
+                true
+              );
+            }
+          "
         >
           <IconifyIconOffline
             class="pure-dialog-svg"
@@ -116,15 +127,15 @@ function handleClose(
               options?.fullscreen
                 ? ExitFullscreen
                 : fullscreen
-                ? ExitFullscreen
-                : Fullscreen
+                  ? ExitFullscreen
+                  : Fullscreen
             "
           />
         </i>
       </div>
       <component
-        v-else
         :is="options?.headerRenderer({ close, titleId, titleClass })"
+        v-else
       />
     </template>
     <component

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Search from "../search/index.vue";
 import Notice from "../notice/index.vue";
+import FullScreen from "./fullScreen.vue";
 import SidebarItem from "./sidebarItem.vue";
 import { isAllEmpty } from "@pureadmin/utils";
 import { ref, nextTick, computed } from "vue";
@@ -17,6 +18,7 @@ const {
   logout,
   backTopMenu,
   onPanel,
+  getLogo,
   username,
   userAvatar,
   avatarsStyle
@@ -37,13 +39,14 @@ nextTick(() => {
     class="horizontal-header"
   >
     <div class="horizontal-header-left" @click="backTopMenu">
-      <img src="/logo.svg" alt="logo" />
+      <img :src="getLogo()" alt="logo" />
       <span>{{ title }}</span>
     </div>
     <el-menu
-      router
       ref="menuRef"
+      router
       mode="horizontal"
+      popper-class="pure-scrollbar"
       class="horizontal-header-menu"
       :default-active="defaultActive"
     >
@@ -56,8 +59,10 @@ nextTick(() => {
     </el-menu>
     <div class="horizontal-header-right">
       <!-- 菜单搜索 -->
-      <Search />
-      <!-- 通知 -->
+      <Search id="header-search" />
+      <!-- 全屏 -->
+      <FullScreen id="full-screen" />
+      <!-- 消息通知 -->
       <Notice id="header-notice" />
       <!-- 退出登录 -->
       <el-dropdown trigger="click">

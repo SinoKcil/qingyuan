@@ -11,7 +11,7 @@ export default {
       {
         path: "/usercenter/index",
         name: "UserCenter",
-        component: () => import("@/views/user/index.vue"),
+        component: () => import("@/views/usercenter/index.vue"),
         meta: {
           title: "个人中心"
         }
