@@ -55,8 +55,8 @@ function fetchUserData() {
         if (response.success) {
           console.log(response);
           user_name.value = response.user.username;
-          user_id.value = "0100" + response.user.id;
-          user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
+          user_id.value = response.user.id;
+          user_gender.value = response.user.avatar; // 直接将头像信息用作性别
           user_tel.value = response.user.phone;
           user_title.value = response.user.role;
         }
@@ -68,24 +68,24 @@ function fetchUserData() {
     console.log("token is not found");
   }
 }
-// fetchUserData();
-// function fetchWareHouseAbnormalities(abnormalityId) {
-//   return fetchAbnormalityForForm(abnormalityId);
-// }
-// if (abnormalityId) {
-//   fetchWareHouseAbnormalities(abnormalityId).then(data => {
-//     if (data) {
-//       warehouse.value.regionName = data["Abnormality"].regionName;
-//       warehouse.value.regionId = data["Abnormality"].id;
-//       warehouse.value.layer = data["Abnormality"].layers;
-//       warehouse.value.leaderName = data["Leader"].username;
-//       warehouse.value.leaderPhone = data["Leader"].phone;
-//       warehouse.value.PosX = data["Abnormality"].x;
-//       warehouse.value.PosY = data["Abnormality"].y;
-//       warehouse.value.label = data["Abnormality"].label;
-//     }
-//   });
-// }
+fetchUserData();
+function fetchWareHouseAbnormalities(abnormalityId) {
+  return fetchAbnormalityForForm(abnormalityId);
+}
+if (abnormalityId) {
+  fetchWareHouseAbnormalities(abnormalityId).then(data => {
+    if (data) {
+      warehouse.value.regionName = data["Abnormality"].regionName;
+      warehouse.value.regionId = data["Abnormality"].id;
+      warehouse.value.layer = data["Abnormality"].layers;
+      warehouse.value.leaderName = data["Leader"].username;
+      warehouse.value.leaderPhone = data["Leader"].phone;
+      warehouse.value.PosX = data["Abnormality"].x;
+      warehouse.value.PosY = data["Abnormality"].y;
+      warehouse.value.label = data["Abnormality"].label;
+    }
+  });
+}
 
 const formRef = ref(null);
 const validateForm = reactive({
@@ -96,57 +96,57 @@ const validateForm = reactive({
   actualResult: [],
   userid: user_id
 });
-const submitForm =()=>{
-  let result="没成功"
-  formRef.value.validate(async()=>{
-    alert("here")
-    try{
-      result=await axios.post("form/upload",validateForm)
-    }
-    catch(err){
-      console.log("error:"+err)
-      alert("运行出错，错误原因为："+err)
-    }finally{
-      alert(result)
-    }
-  })
-  //alert(result)
-}
-
-
-// const submitForm = () => {
-//   if (!formRef.value) return;
-//   const hhh = formRef.value.validate;
-//   formRef.value.validate(valid => {
-//     if (valid) {
-//       const formData = new FormData();
-//       validateForm.fileList.forEach(file => {
-//         formData.append("files", file.raw);
-//       });
-//       formData.append("date", validateForm.date);
-//       formData.append("AbnormalId", abnormalityId);
-//       formData.append("userid", user_id.value);
-
-//       在这里调用API
-//       formUpload(formData)
-//         .then(({ success }) => {
-//           if (success) {
-//             message("提交成功", { type: "success" });
-//           } else {
-//             message("提交失败");
-//           }
-//         })
-//         .catch(error => {
-//           message(`提交异常 ${error}`, { type: "error" });
-//         });
+// const submitForm =()=>{
+//   let result="没成功"
+//   formRef.value.validate(async()=>{
+//     alert("here")
+//     try{
+//       result=await axios.post("form/upload",validateForm)
 //     }
-//   });
-// };
+//     catch(err){
+//       console.log("error:"+err)
+//       alert("运行出错，错误原因为："+err)
+//     }finally{
+//       alert(result)
+//     }
+//   })
+//   //alert(result)
+// }
 
-// const resetForm = () => {
-//   if (!formRef.value) return;
-//   formRef.value.resetFields();
-// };
+
+const submitForm = () => {
+  if (!formRef.value) return;
+  const hhh = formRef.value.validate;
+  formRef.value.validate(valid => {
+    if (valid) {
+      const formData = new FormData();
+      validateForm.fileList.forEach(file => {
+        formData.append("files", file.raw);
+      });
+      formData.append("date", validateForm.date);
+      formData.append("abnormalid", abnormalityId);
+      formData.append("userid", user_id.value);
+
+      // 在这里调用API
+      formUpload(formData)
+        .then(({ success }) => {
+          if (success) {
+            message("提交成功", { type: "success" });
+          } else {
+            message("提交失败");
+          }
+        })
+        .catch(error => {
+          message(`提交异常 ${error}`, { type: "error" });
+        });
+    }
+  });
+};
+
+const resetForm = () => {
+  if (!formRef.value) return;
+  formRef.value.resetFields();
+};
 </script>
 
 <template>
