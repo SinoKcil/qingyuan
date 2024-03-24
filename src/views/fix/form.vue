@@ -20,8 +20,9 @@ const warehouse = ref({
   layer: "请从详情页面提交",
   leaderName: "请从详情页面提交",
   leaderPhone: "请从详情页面提交",
-  PosX: "请从详情页面提交",
-  PosY: "请从详情页面提交",
+  position:"请从详情页面提交",
+  // PosX: "请从详情页面提交",
+  // PosY: "请从详情页面提交",
   label: "请从详情页面提交"
 }); // 初始化仓库对象的默认值
 
@@ -36,33 +37,37 @@ const labelMapper = {
   3: "该处出现了轨道不平顺的现象,小车长时间发生颠簸。该数据已经自动上报至穿梭车调度系统。出现该异常的主要因素能是仓库在长时间使用中积累了大量灰尘、杂物，使得轨道表面不平顺。"
 };
 
-const user_name = ref<string>("张大强");
-const user_id = ref<string>("010001");
-const user_gender = ref<string>("male");
+const user_name = ref<string>("lyt");
+const user_id = ref<string>("2");
+const user_gender = ref<string>("女");
 const user_tel = ref<string>("13012345678");
 const user_title = ref<string>("PrimaryWorker");
+
+onMounted(()=>{
+  fetchUserData()
+})
 //利用cookie获得用户信息
-// function fetchUserData() {
-//   const token = Cookies.get("authorized-token");
-//   if (token) {
-//     getAuthByToken(token)
-//       .then(response => {
-//         if (response.success) {
-//           console.log(response);
-//           user_name.value = response.user.username;
-//           user_id.value = "0100" + response.user.id;
-//           user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
-//           user_tel.value = response.user.phone;
-//           user_title.value = response.user.role;
-//         }
-//       })
-//       .catch(error => {
-//         console.log("error fetching user", error);
-//       });
-//   } else {
-//     console.log("token is not found");
-//   }
-// }
+function fetchUserData() {
+  const token = Cookies.get("authorized-token");
+  if (token) {
+    getAuthByToken(token)
+      .then(response => {
+        if (response.success) {
+          console.log(response);
+          user_name.value = response.user.username;
+          user_id.value = "0100" + response.user.id;
+          user_gender.value = response.user.avatar; // 假设直接将头像信息用作性别
+          user_tel.value = response.user.phone;
+          user_title.value = response.user.role;
+        }
+      })
+      .catch(error => {
+        console.log("error fetching user", error);
+      });
+  } else {
+    console.log("token is not found");
+  }
+}
 // fetchUserData();
 // function fetchWareHouseAbnormalities(abnormalityId) {
 //   return fetchAbnormalityForForm(abnormalityId);
@@ -168,7 +173,7 @@ const submitForm =()=>{
       <div>仓库层数: {{ warehouse.layer }}</div>
       <div>仓库负责人：{{ warehouse.leaderName }}</div>
       <div>仓库负责人联系方式：{{ warehouse.leaderPhone }}</div>
-      <div>故障坐标：({{ warehouse.PosX }},{{ warehouse.PosY }})</div>
+      <div>故障坐标：({{ warehouse.position }})</div>
       <div>故障评估：{{ labelMapper[warehouse.label] }}</div>
     </el-card>
     <!-- 检修情况上传 -->

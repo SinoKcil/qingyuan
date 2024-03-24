@@ -4,7 +4,7 @@ export default {
   meta: {
     icon: "informationLine",
     title: "工厂地图",
-    //showLink: false,
+    showLink: false,
     rank: 10
   },
   children: [

@@ -1,0 +1,22 @@
+    <!-- 触碰变色的按钮 -->
+    <!-- <button v-for="(item,index) in myList" :key="index" :style="active==index?overButton:baseButton" @mouseover="overMouse(index)" @mouseleave="leaveMouse()">
+        {{ item.message }}
+    </button>
+    <hr>
+    <hr> -->
+
+    <!-- 双重循环渲染按钮 -->
+    <!-- <div v-for="(col,index1) in myTable" :key="index1">
+        <button v-for="(item,index2) in myTable[index1]" :key="index2" :style="baseButton">
+            {{ item }}
+        </button>
+    </div> -->
+    <!-- 循环触碰按钮 -->
+    <!-- <div  style="grid-area:d">
+            <div v-for="(col,indexRow) in myTable" :key="indexRow">
+            <button v-for="(item,indexCol) in myTable[indexRow]" :key="indexCol" :style="activeRow==indexRow&&activeCol==indexCol?overButton:baseButton" @mouseover="overMouse(indexRow,indexCol)" @mouseleave="leaveMouse()" >
+                {{ item }}
+            </button>
+            </div>
+        </div> -->
+    <!-- 测试卡片 -->

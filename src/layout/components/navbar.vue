@@ -44,7 +44,7 @@ const {
       <!-- 全屏 -->
       <FullScreen id="full-screen" />
       <!-- 消息通知 -->
-      <Notice id="header-notice" />
+      <!-- <Notice id="header-notice" /> -->
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
@@ -63,13 +63,13 @@ const {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <span
+      <!-- <span
         class="set-icon navbar-bg-hover"
         title="打开项目配置"
         @click="onPanel"
       >
         <IconifyIconOffline :icon="Setting" />
-      </span>
+      </span> -->
     </div>
   </div>
 </template>
@@ -94,6 +94,7 @@ const {
     min-width: 280px;
     height: 48px;
     color: #000000d9;
+    margin-right: 20px;
 
     .el-dropdown-link {
       display: flex;

@@ -102,7 +102,8 @@ onBeforeUnmount(() => {
       </div>
       <div class="login-box">
         <div class="login-form">
-          <avatar class="avatar" />
+          <img src="@/assets/login/logo2.png" alt="" width="200px">
+          <!-- <avatar class="avatar" /> -->
           <Motion>
             <h2 class="outline-none">{{ title }}</h2>
           </Motion>

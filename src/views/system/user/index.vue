@@ -12,12 +12,13 @@ import {
 import { ElMessage,ElMessageBox, TableInstance }  from 'element-plus';
 import { done } from 'nprogress';
 import axios from '@/utils/axios'
+import { getOffsetTop } from 'element-plus/es/utils';
 
 
 
 const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
 const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工",SeniorWorker:"高级检修工" };
-const genders = { male: "男", female: "女" };
+const genders = { male:"男", female:"女" };
 const regions={ Shanghai:"上海",Suzhou:"苏州" };//此处理应从后台获取所有城市列表
 const searchName=ref("")
 const dialogVisible=ref(false)
@@ -33,36 +34,46 @@ interface User{
   user_region:string,
   user_warehouse:string,
 }
-var dataGot:User[]=[
-  {
-    user_id:"1",
-    user_name:"张大强",
-    user_gender:genders["male"],
-    user_tel:"10086",
-    user_title:workers["PrimaryWorker"],
-    user_region:regions["Shanghai"],
-    user_warehouse:"1001",
-  },
-  {
-    user_id:"2",
-    user_name:"李大壮",
-    user_gender:genders["female"],
-    user_tel:"10001",
-    user_title:workers["Practice"],
-    user_region:regions["Suzhou"],//由于prop无法接收数组元素，使用这种复杂的方式
-    user_warehouse:"1002",
-  },
-]
+interface GetUser{
+  id:number
+  username:string
+  phone:string
+  password:string
+  role:string
+  avatar:string
+  region:string
+}
+var dataGot:GetUser[]
+// =[
+//   {
+//     user_id:"1",
+//     user_name:"张大强",
+//     user_gender:"男",
+//     user_tel:"10086",
+//     user_title:workers["PrimaryWorker"],
+//     user_region:regions["Shanghai"],
+//     user_warehouse:"1001",
+//   },
+//   {
+//     user_id:"2",
+//     user_name:"李大壮",
+//     user_gender:"女",
+//     user_tel:"10001",
+//     user_title:workers["Practice"],
+//     user_region:regions["Suzhou"],//由于prop无法接收数组元素，使用这种复杂的方式
+//     user_warehouse:"1002",
+//   },
+// ]
 const form=reactive({
-  user_id:"",
-  user_name:"",
-  user_gender:"",
-  user_tel:"",
+  id:"",
+  username:"",
+  avatar:"",
+  phone:"",
   user_title:"",
-  user_region:"",
+  region:"",
   user_warehouse:"",
 })
-const dataList=ref(dataGot)
+const dataList=ref([])
 const filterRegion=(value:string,row:User) =>{
   return row.user_region===regions[value]
 }
@@ -73,25 +84,22 @@ const clearFilter=()=>{
   tableRef.value!.clearFilter()
 }
 
-// onMounted(()=>{
-//   let result="没成功"
-//   axios.get(`admin/users?page=1&size=100`)
-//   .then((response)=>{
-//     console.log("success load")
-//     dataGot=response.data.users
-//     dataList.value=dataGot
-//     for(let i=0;i<dataList.value.length;i++){
-//       let user=dataList.value[i]
-//       user.user_gender=genders[user.user_gender]
-//       user.user_title=workers[user.user_title]
-//       user.user_region=regions[user.user_region]
-//     }
-//   }).catch((err)=>{
-//     console.log("load error:"+err)
-//     ElMessage.error('数据加载失败！原因是:'+err)
-//   })
-//   //alert(result)
-// })
+onMounted(()=>{
+  let result="没成功"
+  axios.get(`admin/users?page=1&size=100`)
+  .then((response)=>{
+    console.log("success load")
+    dataGot=response.data.users
+    dataList.value=[]
+    for(let i=0;i<dataGot.length;i++){
+      pushUser(i)
+    }
+  }).catch((err)=>{
+    console.log("load error:"+err)
+    ElMessage.error('数据加载失败！原因是:'+err)
+  })
+  //alert(result)
+})
 
 function getKeyByValue(object: any, value: any) {  
     return Object.entries(object).find(([key, val]) => val === value)?.[0];  
@@ -99,14 +107,14 @@ function getKeyByValue(object: any, value: any) {
 function operateUser(index,code){
   if(code==="modify"){
     dialogTitle.value="修改维修人员信息"
-    form.user_id=dataList.value[index].user_id
-    form.user_name=dataList.value[index].user_name
-    form.user_gender=dataList.value[index].user_gender
-    form.user_tel=dataList.value[index].user_tel
+    form.id=dataList.value[index].user_id
+    form.username=dataList.value[index].user_name
+    form.avatar=dataList.value[index].user_gender
+    form.phone=dataList.value[index].user_tel
     form.user_title=dataList.value[index].user_title
-    form.user_region=dataList.value[index].user_region
+    form.region=dataList.value[index].user_region
     form.user_warehouse=dataList.value[index].user_warehouse
-    console.log(form.user_region)
+    console.log(form.region)
   }
   else if(code==="add") {
     dialogTitle.value="添加维修人员"
@@ -116,13 +124,13 @@ function operateUser(index,code){
 const formRef=ref(null)
 function submitForm(code):any {
   let result="没成功"
-  form.user_region=getKeyByValue(regions,form.user_region)//通过值找键值，返回数组的第零个，因为确定该值只可能有一个键
-  form.user_gender=getKeyByValue(genders,form.user_gender)
+  form.region=getKeyByValue(regions,form.region)//通过值找键值，返回数组的第零个，因为确定该值只可能有一个键
+  form.avatar=getKeyByValue(genders,form.avatar)
   form.user_title=getKeyByValue(workers,form.user_title)
   formRef.value.validate(async()=>{
     //alert("here")
     try{
-      if(code==='modify') result=await axios.get(`users/${form.user_id}`,{"region":form.user_region})
+      if(code==='modify') result=await axios.put(`admin/users/${form.username}/region?region=${form.region}`)
       console.log(result)
       ElMessage({
         message: '提交成功！',
@@ -139,6 +147,21 @@ function submitForm(code):any {
   //alert(result)
 }
 
+function pushUser(index){
+  let got=dataGot[index]
+  let user:User={
+    user_id:String(got.id),
+    user_name:got.username,
+    user_gender:got.avatar,
+    user_tel:got.phone,
+    user_title:workers["Practice"],
+    user_region:regions[got.region],
+    user_warehouse:"test 001",
+    }
+  if(user.user_region===undefined) user.user_region="上海"
+  dataList.value.push(user)
+}
+
 const deleteFlag=ref(false)//为了解决popconfirm自运行的问题
 function deleteUser(index){
   if(deleteFlag.value)
@@ -153,8 +176,8 @@ function accurateSearch(){
   if(name==="") return
   dataList.value=[]
   for(let i=0;i<dataGot.length;i++){
-    let username=dataGot[i].user_name
-    if(username===name) dataList.value.push(dataGot[i])
+    let username=dataGot[i].username
+    if(username===name) pushUser(i)
   }
 }
 function vagueSearch(){
@@ -163,9 +186,9 @@ function vagueSearch(){
   let reg=new RegExp(name)//正则表达式查询
   dataList.value=[]
   for(let i=0;i<dataGot.length;i++){
-    let username=dataGot[i].user_name
+    let username=dataGot[i].username
     if(reg.test(username)){
-      dataList.value.push(dataGot[i])
+      pushUser(i)
     }
   }
 }
@@ -198,7 +221,7 @@ function handleSubmit(code){
   )
   .then(()=>{
     let result:number=submitForm(code)
-    if(result==1) dialogVisible.value=false
+    if(result==1) location.reload
   })
   .catch(()=>{})
 }
@@ -294,23 +317,24 @@ function handleSubmit(code){
    >
     <el-form :model="form" ref="formRef" label-width="auto">
       <el-form-item label="编号:">
-        <el-input v-model="form.user_id" style="width:80%" disabled/>
+        <el-input v-model="form.id" style="width:80%" disabled/>
       </el-form-item>
       <el-form-item label="姓名:">
-        <el-input v-model="form.user_name" style="width:80%" disabled/>
+        <el-input v-model="form.username" style="width:80%" disabled/>
       </el-form-item>
       <el-form-item label="性别:">
-        <el-input v-model="form.user_gender" style="width:80%" disabled/>
+        <el-input v-model="form.avatar" style="width:80%" disabled/>
       </el-form-item>
       <el-form-item label="联系电话:">
-        <el-input v-model="form.user_tel" style="width:80%" disabled/>
+        <el-input v-model="form.phone" style="width:80%" disabled/>
       </el-form-item>
       <el-form-item label="职称:">
         <el-input v-model="form.user_title" style="width:80%" disabled/>
       </el-form-item>
       <el-form-item label="负责区域:">
         <el-select
-          v-model="form.user_region" 
+          v-model="form.region" 
+          style="width:80%"
           >
           <!-- value属性是传给v-model的，一定要有 -->
           <el-option 
