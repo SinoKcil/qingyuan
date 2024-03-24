@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 提交工单的控制类
 @RestController
@@ -23,6 +25,11 @@ public class FormController {
                                          @RequestParam("abnormalid") Integer abnormalid,
                                          @RequestParam("userid") Integer userid) {
         List<Form> forms = fileService.uploadFiles(files, date, abnormalid, userid);
-        return ResponseEntity.ok().body(forms);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", "true"); // 添加success字段
+        response.put("data", forms); // 将原来直接返回的forms作为data字段的值
+
+        // 使用构建的Map作为响应体
+        return ResponseEntity.ok().body(response);
     }
 }
