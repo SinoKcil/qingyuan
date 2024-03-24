@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
-@CrossOrigin(origins = "*")
+
 @RequestMapping(value = "/login", method = RequestMethod.POST)
 @Tag(name = "Login", description = "用户的登录控制类")
 public class LoginController {

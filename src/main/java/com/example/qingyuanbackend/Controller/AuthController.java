@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
+
 @RequestMapping("/auth")
 @Tag(name = "Auth", description = "从token中获得用户信息")
 public class AuthController {

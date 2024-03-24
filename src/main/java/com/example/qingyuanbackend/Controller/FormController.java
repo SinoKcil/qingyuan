@@ -11,7 +11,7 @@ import java.util.List;
 
 // 提交工单的控制类
 @RestController
-@CrossOrigin(origins = "*")
+
 @RequestMapping("/form")
 public class FormController {
     @Autowired

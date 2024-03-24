@@ -20,7 +20,7 @@ import java.net.http.HttpResponse;
 * 新：权限归前端管理
 * */
 @RestController
-@CrossOrigin(origins = "*")
+
 @RequestMapping("/admin")
 @Tag(name = "Admin", description = "用户管理")
 public class AdminController {
