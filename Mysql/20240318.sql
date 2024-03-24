@@ -573,7 +573,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (2, 'fjw', '13009730974', '$2a$10$8SoDKazwZgh9yNztekxgxudqTvfHhwI8e6cAbH/TzhlE9cU6oso7q', '检测员', '女', 'Zhangjiahe');
+INSERT INTO `user` VALUES (2, 'lyt', '98765432100', '$2a$10$8SoDKazwZgh9yNztekxgxudqTvfHhwI8e6cAbH/TzhlE9cU6oso7q', '检测员', '女', 'Zhangjiahe');
 INSERT INTO `user` VALUES (3, 'admin', '1234567890', '$2a$10$ZjPgZMVqslHPMZWkbyJLF.LuUnJ731dfzC84oUfiMaQXFCSDPI4dK', 'admin', '男', 'string');
 
 SET FOREIGN_KEY_CHECKS = 1;

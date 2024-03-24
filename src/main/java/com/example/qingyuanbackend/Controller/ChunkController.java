@@ -21,7 +21,7 @@ public class ChunkController {
     @Autowired
     private ChunkService chunkService;
 
-    @PostMapping(consumes = "text/plain")
+    @PostMapping(consumes = "tex/plain")
     @Operation(summary = "添加一个新的区域Chunk", description = "通过POST请求的Body直接传入chunkName的纯文本" +
             "字符串来添加一个新的区域Chunk。",
             requestBody = @RequestBody(required = true, content = @Content(mediaType = "text/plain",
