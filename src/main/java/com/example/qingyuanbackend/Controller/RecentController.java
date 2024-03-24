@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/recent")
 @Tag(name = "最近信息", description = "工厂地图页面下的最近信息的接口")
 public class RecentController {

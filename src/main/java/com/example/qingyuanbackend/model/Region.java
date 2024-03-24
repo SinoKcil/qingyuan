@@ -7,7 +7,7 @@ import java.io.Serializable;
 // Region类 由Python-flask维护，由springboot查询
 @TableName("regions")
 public class Region implements Serializable {
-    public String region;
+    public String region_name;
     public String leader;//负责人
 
     public int id;// 仓库的id
@@ -29,14 +29,14 @@ public class Region implements Serializable {
     }
 
     public String getRegion() {
-        return region;
+        return region_name;
     }
 
     public void setRegion(String region) {
-        this.region = region;
+        this.region_name = region;
     }
 
     public Region() {
-        this.region = region;
+        this.region_name = region_name;
     }
 }
