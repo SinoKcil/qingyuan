@@ -4,27 +4,17 @@
 import { ref, reactive, onMounted,unref } from "vue";
 import { formUpload } from "@/api/mock";
 import axios from '@/utils/axios'
-import { message } from "@/utils/message";
-import { formDataHander } from "@pureadmin/utils";
-import { useRoute, useRouter } from "vue-router";
+import {useRouter } from "vue-router";
 import UploadIcon from "@iconify-icons/ri/upload-2-line";
 import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
 // 从cookie中来拿token要更安全
 import Cookies from "js-cookie";
-const getRoute = useRoute();
+import { useFormStore } from "@/store/modules/form"
+// const getRoute = useRoute();
 const uploadRef = ref();
-const abnormalityId = getRoute.query.AbnormalityId;
-const warehouse = ref({
-  regionName: "请从详情页面提交",
-  regionId: "请从详情页面提交",
-  layer: "请从详情页面提交",
-  leaderName: "请从详情页面提交",
-  leaderPhone: "请从详情页面提交",
-  position:"请从详情页面提交",
-  // PosX: "请从详情页面提交",
-  // PosY: "请从详情页面提交",
-  label: "请从详情页面提交"
-}); // 初始化仓库对象的默认值
+// const abnormalityId = getRoute.query.AbnormalityId;
+const formStore = useFormStore()
+const warehouse = ref(formStore.warehouseStore); // 初始化仓库对象的默认值
 
 
 const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
@@ -99,7 +89,7 @@ const validateForm = reactive({
 const submitForm =()=>{
   let result="没成功"
   formRef.value.validate(async()=>{
-    alert("here")
+    // alert("here")
     try{
       result=await axios.post("form/upload",validateForm)
     }
@@ -173,8 +163,11 @@ const submitForm =()=>{
       <div>仓库层数: {{ warehouse.layer }}</div>
       <div>仓库负责人：{{ warehouse.leaderName }}</div>
       <div>仓库负责人联系方式：{{ warehouse.leaderPhone }}</div>
-      <div>故障坐标：({{ warehouse.position }})</div>
-      <div>故障评估：{{ labelMapper[warehouse.label] }}</div>
+      <div>故障坐标：{{ warehouse.position }}</div>
+      <div>        
+        <div class="div-item">故障原因：</div>
+        <div class="div-item"> {{ labelMapper[warehouse.label] }}</div>
+      </div>
     </el-card>
     <!-- 检修情况上传 -->
     <el-form ref="formRef" :model="validateForm">
@@ -260,6 +253,9 @@ const submitForm =()=>{
 .container {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.div-item{
+  display:inline-block
 }
 </style>
 ./axios
