@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-
+//@CrossOrigin(origins = "*")
 @RequestMapping("/operationData") // 定义基础路径
 @Tag(name = "小车运行数据上传接口", description = "处理小车运行数据上传的请求")
 public class OperationDataUploadController {

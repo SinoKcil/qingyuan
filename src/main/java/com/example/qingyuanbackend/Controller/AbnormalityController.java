@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-
+//@CrossOrigin(origins = "*")
 @Tag(name = "Abnormalities", description = "工厂地图")
 public class AbnormalityController {
 
