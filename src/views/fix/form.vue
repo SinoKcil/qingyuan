@@ -12,6 +12,7 @@ import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
 import Cookies from "js-cookie";
 import { useFormStore } from "@/store/modules/form";
 const getRoute = useRoute();
+const router=useRouter()
 const uploadRef = ref();
 // const abnormalityId = getRoute.query.AbnormalityId;
 const formStore = useFormStore();
@@ -125,6 +126,9 @@ const submitForm = () => {
         .then(({ success }) => {
           if (success) {
             message("提交成功", { type: "success" });
+            router.push({
+              name:"Welcome",
+            })
           } else {
             message("提交失败");
           }

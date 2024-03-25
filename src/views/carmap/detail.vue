@@ -1,7 +1,7 @@
 <!-- 故障详情页面 -->
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-//import { ArrowLeft, ArrowRight, Delete, Edit, Share } from "element-plus";
+import { ArrowLeft, ArrowRight, Delete, Edit, Share } from "@element-plus/icons-vue";
 import { getAbnormalDetails } from "@/api/back";
 import { ref, reactive, computed, watch } from "vue";
 import form from "../src/fix/form.vue";
@@ -12,6 +12,8 @@ const handleBack = () => {
   router.go(-1);
 };
 // 详细信息
+const regions={ Shanghai:"上海",Suzhou:"苏州",Default:"哈尔滨",Zhangjiahe:"张家口" };
+
 const regionName = ref<string>("");
 const x = ref<number>(0);
 const y = ref<number>(0);
@@ -116,7 +118,7 @@ function reportFault(id: number) {
           <!-- 怎么在最左侧对齐呢 -->
           <el-button
             type="primary"
-            icon="el-icon-arrow-left"
+            :icon="ArrowLeft"
             @click="handleBack"
             >返回</el-button
           >
@@ -127,9 +129,9 @@ function reportFault(id: number) {
               <el-text
                 class="mx-3"
                 type="warning"
-                style="font-family: Consolas; font-size: 32px"
+                style="font-family: Consolas; font-size: 20px"
               >
-                <b>Label: {{ getRoute.query.label }}</b>
+                <b>故障Label: {{ getRoute.query.label }}</b>
               </el-text>
             </div>
 
@@ -138,7 +140,7 @@ function reportFault(id: number) {
               v-else
               class="mx-3"
               type="error"
-              style="font-family: Consolas; font-size: 32px"
+              style="font-family: Consolas; font-size: 20px"
             >
               <b>请返回至工厂地图，然后点击对应区域来查看故障详情</b>
             </el-text>
@@ -146,22 +148,29 @@ function reportFault(id: number) {
           <el-text
             class="mx-3"
             type="default"
-            style="font-family: Consolas; font-size: 32px"
+            style="font-family: Consolas; font-size: 20px"
           >
             <b>时间: {{ time }}</b>
           </el-text>
           <el-text
             class="mx-3"
             type="default"
-            style="font-family: Consolas; font-size: 32px"
+            style="font-family: Consolas; font-size: 20px"
           >
-            <b>位置: {{ getRoute.query.region }}仓库({{ x }},{{ y }})</b>
+            <b>位置: {{ regions[getRoute.query.region] }}仓库</b>
+          </el-text>
+          <el-text
+            class="mx-3"
+            type="default"
+            style="font-family: Consolas; font-size: 20px"
+          >
+            <b>坐标:({{ x }},{{ y }})</b>
           </el-text>
           <div>
             <el-text
               class="mx-3"
               type="error"
-              style="font-family: Consolas; font-size: 32px"
+              style="font-family: Consolas; font-size: 20px"
             >
               <b>{{ status }}</b>
             </el-text>
@@ -198,28 +207,28 @@ function reportFault(id: number) {
           <el-text
             class="mx-3"
             type="primary"
-            style="font-family: Consolas; font-size: 32px"
+            style="font-family: Consolas; font-size: 20px"
           >
             <b>故障原因</b>
           </el-text>
           <el-text
             class="mx-3"
             type="default"
-            style="font-family: Consolas; font-size: 26px"
+            style="font-family: Consolas; font-size: 20px"
           >
             {{ labelDesc }}
           </el-text>
           <el-text
             class="mx-3"
             type="primary"
-            style="font-family: Consolas; font-size: 32px"
+            style="font-family: Consolas; font-size: 20px"
           >
             <b>解决建议</b>
           </el-text>
           <el-text
             class="mx-3"
             type="default"
-            style="font-family: Consolas; font-size: 26px"
+            style="font-family: Consolas; font-size: 20px"
           >
             {{ suggestion }}
           </el-text>
