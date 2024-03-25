@@ -235,31 +235,40 @@ function chooseColor(indexRow, indexCol) {
 function routerToTable(category, ticketid) {
   let tempLabel= tableValue.value[activeRow.value][activeCol.value]
   if(tempLabel===0||tempLabel===-1) return
-  let tempForm={
-        regionName:area.region,
-        regionId:"test 1001",
-        layer:area.layer,
-        leaderName:"韩梅梅",
-        leaderPhone:"10016",
-        position:myTable.value[activeRow.value][activeCol.value],
-        label:tempLabel,
-      }
-  formStore.getForm(tempForm)
-  console.log(formStore.warehouseStore)
+  // let tempForm={
+  //       Row: activeRow.value,
+  //       Col: activeCol.value,
+  //       layer: selectedLayer.value,
+  //       label: tableValue[activeRow.value][activeCol.value],
+  //       region: area.region
+  //     }
+  // formStore.getForm(tempForm)
+  // console.log(formStore.warehouseStore)
   //vue移除了params用法，不能用那个传参
-  if (category == "detail")
+  if (category === "detail")
     router.push({
-      name: "SubmitTicket",
-      // query: {
-      //   regionName:area.region,
-      //   regionId:"test 1001",
-      //   layer:area.layer,
-      //   leaderName:"韩梅梅",
-      //   leaderPhone:"10016",
-      //   position:myTable.value[activeRow.value][activeCol.value],
-      //   label:tempLabel,
-      // }
+      name: "FaultDetail",
+      query: {
+        Row: activeRow.value,
+        Col: activeCol.value,
+        layer: selectedLayer.value,
+        label: tableValue.value[activeRow.value][activeCol.value],
+        region: area.region
+      }
     });
+  // if (category == "detail")
+  //   router.push({
+  //     name: "FaultDetail",
+  //     query: {
+  //       regionName:area.region,
+  //       regionId:"test 1001",
+  //       layer:area.layer,
+  //       leaderName:"韩梅梅",
+  //       leaderPhone:"10016",
+  //       position:myTable.value[activeRow.value][activeCol.value],
+  //       label:tempLabel,
+  //     }
+  //   });
   if (category == "ticket")
     router.push({ name: "404", query: { ticketId: ticketid } });
 }

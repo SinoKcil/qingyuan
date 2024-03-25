@@ -6,7 +6,7 @@ defineOptions({
 
 import { ref,reactive, onMounted,inject } from 'vue'
 import { 
-  Delete,
+  Check,
   Edit,
   InfoFilled,
 } from '@element-plus/icons-vue'
@@ -14,6 +14,7 @@ import { ElMessage,ElMessageBox, TableInstance }  from 'element-plus';
 import { done } from 'nprogress';
 import axios from '@/utils/axios'
 import { getOffsetTop } from 'element-plus/es/utils';
+import { useRouter } from 'vue-router';
 
 
 
@@ -24,6 +25,7 @@ const regions={ Shanghai:"上海",Suzhou:"苏州",Default:"哈尔滨",Zhangjiahe
 const abnormalities=["左右高度不一","轨道接缝落差","轨道不平顺"]
 const status=[ "故障未上报","故障已上报","故障已维修", "误故障报"]
 
+const router=useRouter()
 const searchName=ref("")
 const dialogVisible=ref(false)
 const dialogTitle=ref("")
@@ -36,7 +38,7 @@ interface abnormality{
     region:string,
     layer:number,
     location:string,
-    label:number,
+    label:string,
     status:number,
     worker:string,
     phone:string
@@ -63,7 +65,7 @@ interface GetUAbnormality{
     regionName: string
   }
 }
-var dataGot:GetAbnormality[]
+var dataGot
 
 const dataList=ref([])
 const filterTime=(value:string,row:abnormality) =>{
@@ -76,11 +78,11 @@ const filterLabel=(value:string,row:abnormality) =>{
 const filterRegion=(value:string,row:abnormality) =>{
   return row.region===regions[value]
 }
-const filterLayer=(value:string,row:abnormality) =>{
+const filterLayer=(value:number,row:abnormality) =>{
   return row.layer===value
 }
-const filterStatus=(value:string,row:abnormality) =>{
-  return row.status===status[value]
+const filterStatus=(value:number,row:abnormality) =>{
+  return row.status===value
 }
 const clearFilter=()=>{
   tableRef.value!.clearFilter()
@@ -176,6 +178,20 @@ function resetSearch(){
   searchName.value=""//通过绑定v-model重置输入框
   dataList.value=dataGot
 }
+function finishFault(id: number) {
+  if(dataList.value[id].label==="故障已维修") return
+  if (id >= 0) {
+    router.push({
+      name: "FixDetail",
+      query: { AbnormalityId: id } //  故障的id（注意不是region的id）
+    });
+  } else {
+    router.push({
+      name: "404",
+      query: {}
+    });
+  }
+}
 
 const currentPage = ref(1)
 const pageSize = 10
@@ -192,6 +208,7 @@ const handelCurrentChange = page => {
    <el-card >
     <div style="margin-bottom: 5px">
       <span><h2>故障工单管理</h2></span>
+      <el-button type="info" disabled>点击“提交维修”进入确认维修工单界面</el-button>
       <!-- <span>
         查询检修员：
         <el-input
@@ -211,7 +228,7 @@ const handelCurrentChange = page => {
       <el-table 
       ref="tableRef"
       :data="dataList" 
-      row-key="user_id"
+      row-key="id"
       max-height="600px"
       table-layout="auto"
       stripe
@@ -268,6 +285,11 @@ const handelCurrentChange = page => {
       <el-table-column
         label="联系方式" prop="phone" minWidth="90"
       ></el-table-column>
+      <el-table-column label="操作" width="150" fixed="right">
+        <template #default="scope">
+          <el-button @click="finishFault(scope.$index)" type="primary" size="medium" :icon="Check" round>提交维修</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- <el-pagination 
       layout="prev, pager, next" :total="50"
@@ -277,53 +299,6 @@ const handelCurrentChange = page => {
        /> -->
    </el-card>
 
-   <el-dialog
-   v-model="dialogVisible"
-   :title="dialogTitle"
-   width="50%"
-   :before-close="handleCloseDialog"
-   >
-    <el-form :model="form" ref="formRef" label-width="auto">
-      <el-form-item label="编号:">
-        <el-input v-model="form.id" style="width:80%" disabled/>
-      </el-form-item>
-      <el-form-item label="姓名:">
-        <el-input v-model="form.username" style="width:80%" disabled/>
-      </el-form-item>
-      <el-form-item label="性别:">
-        <el-input v-model="form.avatar" style="width:80%" disabled/>
-      </el-form-item>
-      <el-form-item label="联系电话:">
-        <el-input v-model="form.phone" style="width:80%" disabled/>
-      </el-form-item>
-      <el-form-item label="职称:">
-        <el-input v-model="form.user_title" style="width:80%" disabled/>
-      </el-form-item>
-      <el-form-item label="负责区域:">
-        <el-select
-          v-model="form.region" 
-          style="width:80%"
-          >
-          <!-- value属性是传给v-model的，一定要有 -->
-          <el-option 
-            v-for="item in Object.keys(regions)"           
-            :label="regions[item]"
-            :value="item" 
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="负责区域:">
-        <el-input v-model="form.user_warehouse" style="width:80%" disabled/>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="">
-        <el-button @click="handleSubmit('modify')">提交</el-button>
-        <el-button @click="handleCloseDialog">返回</el-button>
-      </div>
-    </template>
-  </el-dialog>
 </div>
 </template>
 <style scoped>

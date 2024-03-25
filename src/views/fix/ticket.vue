@@ -4,18 +4,20 @@
 import { ref, reactive, onMounted,unref } from "vue";
 import { formUpload } from "@/api/mock";
 import axios from '@/utils/axios'
-import {useRouter } from "vue-router";
+import {useRouter,useRoute } from "vue-router";
 import UploadIcon from "@iconify-icons/ri/upload-2-line";
 import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
 // 从cookie中来拿token要更安全
 import Cookies from "js-cookie";
 import { useFormStore } from "@/store/modules/form"
 // const getRoute = useRoute();
+const getRoute=useRoute()
 const uploadRef = ref();
 // const abnormalityId = getRoute.query.AbnormalityId;
 const formStore = useFormStore()
 const warehouse = ref(formStore.warehouseStore); // 初始化仓库对象的默认值
 const router = useRouter()
+let abnormalityId = getRoute.query.AbnormalityId;
 
 const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
 const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工",SeniorWorker:"高级检修工" };
@@ -58,25 +60,22 @@ function fetchUserData() {
     console.log("token is not found");
   }
 }
-// fetchUserData();
-// function fetchWareHouseAbnormalities(abnormalityId) {
-//   return fetchAbnormalityForForm(abnormalityId);
-// }
-// if (abnormalityId) {
-//   fetchWareHouseAbnormalities(abnormalityId).then(data => {
-//     if (data) {
-//       warehouse.value.regionName = data["Abnormality"].regionName;
-//       warehouse.value.regionId = data["Abnormality"].id;
-//       warehouse.value.layer = data["Abnormality"].layers;
-//       warehouse.value.leaderName = data["Leader"].username;
-//       warehouse.value.leaderPhone = data["Leader"].phone;
-//       warehouse.value.PosX = data["Abnormality"].x;
-//       warehouse.value.PosY = data["Abnormality"].y;
-//       warehouse.value.label = data["Abnormality"].label;
-//     }
-//   });
-// }
-
+function fetchWareHouseAbnormalities(abnormalityId) {
+  return fetchAbnormalityForForm(abnormalityId);
+}
+if (abnormalityId) {
+  fetchWareHouseAbnormalities(abnormalityId).then(data => {
+    if (data) {
+      warehouse.value.regionName = data["Abnormality"].regionName;
+      warehouse.value.regionId = data["Abnormality"].id;
+      warehouse.value.layer = data["Abnormality"].layers;
+      warehouse.value.leaderName = data["Leader"].username;
+      warehouse.value.leaderPhone = data["Leader"].phone;
+      warehouse.value.position = `(${data["Abnormality"].x},${data["Abnormality"].y})`;
+      warehouse.value.label = data["Abnormality"].label;
+    }
+  });
+}
 const formRef = ref(null);
 const validateForm = reactive({
   fileList: [],

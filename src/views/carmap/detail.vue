@@ -1,7 +1,7 @@
 <!-- 故障详情页面 -->
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { ArrowLeft, ArrowRight, Delete, Edit, Share } from "element-plus";
+//import { ArrowLeft, ArrowRight, Delete, Edit, Share } from "element-plus";
 import { getAbnormalDetails } from "@/api/back";
 import { ref, reactive, computed, watch } from "vue";
 import form from "../src/fix/form.vue";
@@ -167,8 +167,9 @@ function reportFault(id: number) {
             </el-text>
 
             <!-- 当 status 为 1 时，显示上报故障按钮 -->
+            <!-- v-if="status === '轨道出现异常，请及时上报维护申请。'" -->
             <el-button
-              v-if="status === '轨道出现异常，请及时上报维护申请。'"
+             
               type="warning"
               style="margin-left: 58px; margin-top: -10px"
               @click="reportFault(id)"

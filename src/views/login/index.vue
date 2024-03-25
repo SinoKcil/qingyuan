@@ -157,6 +157,10 @@ onBeforeUnmount(() => {
                 登录
               </el-button>
             </Motion>
+            <Motion>
+              初始密码权限为检测员：<br/>用户名:lyt，密码：fjw258700<br/>
+              管理员权限账号:<br/>用户名：admin1，密码：admin123
+            </Motion>
           </el-form>
         </div>
       </div>

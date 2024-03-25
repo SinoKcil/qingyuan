@@ -4,7 +4,7 @@ export default {
   meta: {
     icon: "informationLine",
     title: "工厂地图",
-    showLink: true,
+    showLink: false,
     rank: 10
   },
   children: [
@@ -23,7 +23,7 @@ export default {
       component: () => import("@/views/carmap/detail.vue"),
       meta: {
         title: "故障详情",
-        showLink:true,
+        showLink:false,
       }
     }
   ]
