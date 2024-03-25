@@ -77,7 +77,44 @@ export function post(url, params = {}) {
     });
   });
 }
-
+/*
+*   put请求 
+*/
+export function put(url, params = {}) {
+  return new Promise((resolve, reject) => {
+    httpService({
+      url: url,
+      method: 'put',
+      data: params
+    }).then(response => {
+      console.log(response)
+      resolve(response);
+    }).catch(error => {
+      console.log(error)
+      reject(error);
+    });
+  });
+}
+/*
+ *  delete请求
+ *  url:请求地址
+ *  params:参数
+ * */
+export function Delete(url, params = {}) {
+  return new Promise((resolve, reject) => {
+    httpService({
+      url: url,
+      method: 'delete',
+      data: params
+    }).then(response => {
+      console.log(response)
+      resolve(response);
+    }).catch(error => {
+      console.log(error)
+      reject(error);
+    });
+  });
+}
 /*
  *  文件上传
  *  url:请求地址
@@ -101,5 +138,7 @@ export function fileUpload(url, params = {}) {
 export default {
   get,
   post,
+  put,
+  Delete,
   fileUpload
 }

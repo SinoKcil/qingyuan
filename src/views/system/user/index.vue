@@ -3,7 +3,7 @@ defineOptions({
     name:"SystemUser"
 });
 
-import { ref,reactive, onMounted } from 'vue'
+import { ref,reactive, onMounted,inject } from 'vue'
 import { 
   Delete,
   Edit,
@@ -124,18 +124,26 @@ function operateUser(index,code){
 const formRef=ref(null)
 function submitForm(code):any {
   let result="没成功"
-  form.region=getKeyByValue(regions,form.region)//通过值找键值，返回数组的第零个，因为确定该值只可能有一个键
-  form.avatar=getKeyByValue(genders,form.avatar)
+  form.avatar=getKeyByValue(genders,form.avatar)//通过值找键值，返回数组的第零个，因为确定该值只可能有一个键
   form.user_title=getKeyByValue(workers,form.user_title)
   formRef.value.validate(async()=>{
     //alert("here")
     try{
-      if(code==='modify') result=await axios.put(`admin/users/${form.username}/region?region=${form.region}`)
-      console.log(result)
+      if(code==='modify') 
+        {
+          console.log(`admin/users/${form.username}/region?region=${form.region}`)
+            await axios.put(`admin/users/${form.username}/region?region=${form.region}`)
+              .then((response)=>{
+                console.log(response.data)
+              })
+        }
+      //console.log(result)
       ElMessage({
         message: '提交成功！',
         type: 'success',
       })
+      dialogVisible.value=false
+      location.reload()
       return 1
     }
     catch(err){
@@ -221,7 +229,9 @@ function handleSubmit(code){
   )
   .then(()=>{
     let result:number=submitForm(code)
-    if(result==1) location.reload
+    if(result===1) {
+      console.log("success")
+    }
   })
   .catch(()=>{})
 }

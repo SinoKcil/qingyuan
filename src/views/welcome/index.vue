@@ -11,6 +11,7 @@ import CheckLine from "@iconify-icons/ri/chat-check-line";
 import Smile from "@iconify-icons/ri/star-smile-line";
 import echarts from "@/plugins/echarts";
 import {  getRegions ,getAbnormalities, getRecentNews } from "@/api/back";
+import { useFormStore } from "@/store/modules/form"
 
 enum routerCate {
   detail,
@@ -40,8 +41,9 @@ const myList = ref([
 const myTable = ref()
 const tableValue=ref()
 const layers=ref([])
+const formStore = useFormStore()
 
-const regions = ref(); //这个需要响应式 因为请求是一个异步函数 更改接口之后 这是个由region 对象构成的list
+const regions = ref(["Suzhou","Shanghai"]); //这个需要响应式 因为请求是一个异步函数 更改接口之后 这是个由region 对象构成的list
 const showTip = ref(false); //展示悬浮窗
 const cursorX = ref(0); //监听鼠标坐标
 const cursorY = ref(0);
@@ -231,18 +233,32 @@ function chooseColor(indexRow, indexCol) {
   if (tableValue.value[indexRow][indexCol] === 3) return blueButton;
 }
 function routerToTable(category, ticketid) {
-  if (category == "detail")
-    router.push({
-      name: "SubmitTicket",
-      params: {
+  let tempLabel= tableValue.value[activeRow.value][activeCol.value]
+  if(tempLabel===0||tempLabel===-1) return
+  let tempForm={
         regionName:area.region,
         regionId:"test 1001",
         layer:area.layer,
         leaderName:"韩梅梅",
         leaderPhone:"10016",
         position:myTable.value[activeRow.value][activeCol.value],
-        label: tableValue[activeRow.value][activeCol.value],
+        label:tempLabel,
       }
+  formStore.getForm(tempForm)
+  console.log(formStore.warehouseStore)
+  //vue移除了params用法，不能用那个传参
+  if (category == "detail")
+    router.push({
+      name: "SubmitTicket",
+      // query: {
+      //   regionName:area.region,
+      //   regionId:"test 1001",
+      //   layer:area.layer,
+      //   leaderName:"韩梅梅",
+      //   leaderPhone:"10016",
+      //   position:myTable.value[activeRow.value][activeCol.value],
+      //   label:tempLabel,
+      // }
     });
   if (category == "ticket")
     router.push({ name: "404", query: { ticketId: ticketid } });

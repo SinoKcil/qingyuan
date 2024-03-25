@@ -1,34 +1,29 @@
 <!-- 提交工单 -->
 
 <script setup lang="ts">
-import { ref, reactive, onMounted,unref } from "vue";
+import { ref, reactive, onMounted, unref } from "vue";
 import { formUpload } from "@/api/mock";
-import axios from '@/utils/axios'
+import axios from "@/utils/axios";
+import { useRouter, useRoute } from "vue-router";
 import { message } from "@/utils/message";
-import { formDataHander } from "@pureadmin/utils";
-import { useRoute, useRouter } from "vue-router";
 import UploadIcon from "@iconify-icons/ri/upload-2-line";
 import { getAuthByToken, fetchAbnormalityForForm } from "@/api/back";
 // 从cookie中来拿token要更安全
 import Cookies from "js-cookie";
+import { useFormStore } from "@/store/modules/form";
 const getRoute = useRoute();
 const uploadRef = ref();
-const abnormalityId = getRoute.query.AbnormalityId;
-const warehouse = ref({
-  regionName: "请从详情页面提交",
-  regionId: "请从详情页面提交",
-  layer: "请从详情页面提交",
-  leaderName: "请从详情页面提交",
-  leaderPhone: "请从详情页面提交",
-  position:"请从详情页面提交",
-  // PosX: "请从详情页面提交",
-  // PosY: "请从详情页面提交",
-  label: "请从详情页面提交"
-}); // 初始化仓库对象的默认值
-
+// const abnormalityId = getRoute.query.AbnormalityId;
+const formStore = useFormStore();
+const warehouse = ref(formStore.warehouseStore); // 初始化仓库对象的默认值
+let abnormalityId = getRoute.query.AbnormalityId;
 
 const managers = { PrimaryManager: "仓库管理员", GeneManeger: "总负责人" };
-const workers = { Practice: "实习检修工", PrimaryWorker: "初级检修工",SeniorWorker:"高级检修工" };
+const workers = {
+  Practice: "实习检修工",
+  PrimaryWorker: "初级检修工",
+  SeniorWorker: "高级检修工"
+};
 const genders = { male: "男", female: "女" };
 const labelMapper = {
   0: "该处轨道正常",
@@ -43,9 +38,9 @@ const user_gender = ref<string>("女");
 const user_tel = ref<string>("13012345678");
 const user_title = ref<string>("PrimaryWorker");
 
-onMounted(()=>{
-  fetchUserData()
-})
+onMounted(() => {
+  fetchUserData();
+});
 //利用cookie获得用户信息
 function fetchUserData() {
   const token = Cookies.get("authorized-token");
@@ -80,8 +75,7 @@ if (abnormalityId) {
       warehouse.value.layer = data["Abnormality"].layers;
       warehouse.value.leaderName = data["Leader"].username;
       warehouse.value.leaderPhone = data["Leader"].phone;
-      warehouse.value.PosX = data["Abnormality"].x;
-      warehouse.value.PosY = data["Abnormality"].y;
+      warehouse.value.position = `(${data["Abnormality"].x},${data["Abnormality"].y})`;
       warehouse.value.label = data["Abnormality"].label;
     }
   });
@@ -91,7 +85,7 @@ const formRef = ref(null);
 const validateForm = reactive({
   fileList: [],
   date: "",
-  checkResult: '1', 
+  checkResult: "1",
   //这个应该是一个字符串，缺省值设置为选择‘是’（我们相信模型检测结果正确率很高）如果是数字，那么这个将无法被elementui进行检测，需要先点一下否再点是，直接点是 无法点选。
   actualResult: [],
   userid: user_id
@@ -112,7 +106,6 @@ const validateForm = reactive({
 //   })
 //   //alert(result)
 // }
-
 
 const submitForm = () => {
   if (!formRef.value) return;
@@ -173,8 +166,11 @@ const resetForm = () => {
       <div>仓库层数: {{ warehouse.layer }}</div>
       <div>仓库负责人：{{ warehouse.leaderName }}</div>
       <div>仓库负责人联系方式：{{ warehouse.leaderPhone }}</div>
-      <div>故障坐标：({{ warehouse.position }})</div>
-      <div>故障评估：{{ labelMapper[warehouse.label] }}</div>
+      <div>故障坐标：{{ warehouse.position }}</div>
+      <div>
+        <div class="div-item">故障原因：</div>
+        <div class="div-item">{{ labelMapper[warehouse.label] }}</div>
+      </div>
     </el-card>
     <!-- 检修情况上传 -->
     <el-form ref="formRef" :model="validateForm">
@@ -260,6 +256,9 @@ const resetForm = () => {
 .container {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.div-item {
+  display: inline-block;
 }
 </style>
 ./axios
