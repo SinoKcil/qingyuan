@@ -10,12 +10,15 @@ import Question from "@iconify-icons/ri/question-answer-line";
 import CheckLine from "@iconify-icons/ri/chat-check-line";
 import Smile from "@iconify-icons/ri/star-smile-line";
 import echarts from "@/plugins/echarts";
+import {  getRegions ,getAbnormalities, getRecentNews } from "@/api/back";
 import { useFormStore } from "@/store/modules/form"
 
 enum routerCate {
   detail,
   ticket
 } //路由页面的id
+
+
 const show = ref(true);
 const activeRow = ref(-1);
 const activeCol = ref(-1);
@@ -51,8 +54,13 @@ const mobile = ref(screen.width <= 993);
 const totalLayers = ref(1); //层数
 const selectedLayer = ref(1); //选择的层数
 const valueRef=ref([])
-const chart=ref()
+const chart = ref()
 
+getRegions().then(data => {
+  if (data) {
+    regions.value = data["regions"]; //区域列表
+  }
+});
 
 const area = reactive({
   region: "Shanghai",
@@ -300,15 +308,25 @@ function initEcharts(){
 }
 
 watch(selected, newValue => {
-  area.region = newValue; // 更新区域
+  area.region = newValue.region_name; // 更新区域
   console.log(area.region);
   // 根据新的区域重新请求异常数据
-  getAbnormality()
+  getAbnormalities(area.region, area.layer).then(data => {
+    if (data) {
+      myTable.value = data["tableId"];
+      tableValue.value = data["tableStatus"];
+      totalLayers.value = data["totalLayers"];
+    }
+  });
 });
 watch(selectedLayer, (newValue, oldValue) => {
-  area.layer=newValue
   // 发送请求
-  getAbnormality()
+  getAbnormalities(area.region, newValue).then(data => {
+    if (data) {
+      myTable.value = data["tableId"];
+      tableValue.value = data["tableStatus"];
+    }
+  });
 });
 </script>
 <template>
@@ -329,7 +347,7 @@ watch(selectedLayer, (newValue, oldValue) => {
                 >
                   <el-option
                     v-for="item in regions"
-                    :label="item"
+                    :label="item.region_name"
                     :value="item"
                   >
                   </el-option>
@@ -342,7 +360,7 @@ watch(selectedLayer, (newValue, oldValue) => {
                   style="width:150px"
                 >
                   <el-option
-                    v-for="item in layers"
+                    v-for="item in totalLayers"
                     :label="item"
                     :value="item"
                   >
