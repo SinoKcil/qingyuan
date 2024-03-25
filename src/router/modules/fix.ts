@@ -1,6 +1,6 @@
 export default {
-  path: "/carmap",
-  redirect: "/carmap/index",
+  path: "/fix",
+  redirect: "/fix/index",
   meta: {
     icon: "material-symbols:date-range-outline-sharp",
     title: "故障工单",
@@ -13,7 +13,7 @@ export default {
       name: "AllFixTicket",
       component: () => import("@/views/fix/index.vue"),
       meta: {
-        title: "工单汇总"
+        title: "工单汇总",
       }
     },
     {
@@ -21,8 +21,8 @@ export default {
       name: "FixDetail",
       component: () => import("@/views/fix/ticket.vue"),
       meta: {
-        title: "工单界面"
-        //showLink:false,
+        title: "维修工单",
+        showLink:false,
       }
     },
     {
@@ -30,8 +30,8 @@ export default {
       name: "SubmitTicket",
       component: () => import("@/views/fix/form.vue"),
       meta: {
-        title: "提交工单"
-        //showLink:false,
+        title: "提交工单",
+        showLink:false,
       }
     }
   ]

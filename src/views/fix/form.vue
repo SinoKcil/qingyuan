@@ -30,7 +30,7 @@ const labelMapper = {
 const user_name = ref<string>("lyt");
 const user_id = ref<string>("2");
 const user_gender = ref<string>("女");
-const user_tel = ref<string>("13012345678");
+const user_tel = ref<string>("98765432100");
 const user_title = ref<string>("PrimaryWorker");
 
 onMounted(()=>{
@@ -192,10 +192,10 @@ const submitForm =()=>{
       <el-form-item v-if="validateForm.checkResult === '0'">
         故障原因：
         <el-checkbox-group v-model="validateForm.actualResult">
-          <el-checkbox value="1">原因1</el-checkbox>
-          <el-checkbox value="2">原因2</el-checkbox>
-          <el-checkbox value="3">原因3</el-checkbox>
-          <el-checkbox value="0">其他</el-checkbox>
+          <el-checkbox value="0">左右高度不一</el-checkbox>
+          <el-checkbox value="1">轨道接缝落差</el-checkbox>
+          <el-checkbox value="2">轨道不平顺</el-checkbox>
+          <el-checkbox value="3">其他</el-checkbox>
         </el-checkbox-group>
         <el-input
           v-if="validateForm.actualResult.includes(0)"

@@ -11,7 +11,8 @@ const permissionRouter = {
   meta: {
     title: "权限管理",
     icon: "ep:lollipop",
-    rank: 10
+    rank: 10,
+    showLink:false
   },
   children: [
     {
@@ -51,7 +52,7 @@ const systemManagementRouter = {
       meta: {
         icon: "ri:admin-line",
         title: "员工管理",
-        //roles: ["admin"]
+        roles: ["admin"]
       }
     }
   ]

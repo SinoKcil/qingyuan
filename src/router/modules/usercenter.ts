@@ -4,7 +4,7 @@ export default {
     meta: {
       icon: "material-symbols:account-circle-outline",
       title: "个人中心",
-      //showLink: false,
+      showLink: false,
       rank: 10
     },
     children: [
